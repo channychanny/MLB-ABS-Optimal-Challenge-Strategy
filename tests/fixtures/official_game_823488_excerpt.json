@@ -1,0 +1,150 @@
+{
+  "fixture_schema_version": "official-feed-excerpt-v1",
+  "source": {
+    "feed_url": "https://statsapi.mlb.com/api/v1.1/game/823488/feed/live",
+    "savant_date": "2026-03-28",
+    "notes": "由官方來源保留的最小重現片段；預期五次 Challenge，其中三次發生於第十局。"
+  },
+  "feed": {
+    "gamePk": 823488,
+    "gameData": {
+      "datetime": {"officialDate": "2026-03-28"},
+      "game": {"season": "2026"},
+      "teams": {
+        "away": {
+          "id": 140,
+          "name": "Texas Rangers",
+          "sport": {"id": 1, "name": "Major League Baseball"},
+          "league": {"id": 103, "name": "American League"}
+        },
+        "home": {
+          "id": 143,
+          "name": "Philadelphia Phillies",
+          "sport": {"id": 1, "name": "Major League Baseball"},
+          "league": {"id": 104, "name": "National League"}
+        }
+      }
+    },
+    "liveData": {
+      "plays": {
+        "allPlays": [
+          {
+            "about": {"atBatIndex": 26, "inning": 4, "halfInning": "top"},
+            "matchup": {
+              "batter": {"id": 694497, "fullName": "Evan Carter"},
+              "pitcher": {"id": 605400, "fullName": "Aaron Nola"}
+            },
+            "playEvents": [
+              {"index": 0, "type": "pitch", "details": {"call": {"code": "B", "description": "Ball"}}, "count": {"balls": 1, "strikes": 0, "outs": 2}},
+              {"index": 1, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}}, "count": {"balls": 1, "strikes": 1, "outs": 2}},
+              {
+                "index": 2,
+                "type": "pitch",
+                "details": {"call": {"code": "C", "description": "Called Strike"}, "hasReview": true},
+                "count": {"balls": 1, "strikes": 2, "outs": 2},
+                "reviewDetails": {
+                  "isOverturned": false,
+                  "challengeTeamId": 140,
+                  "reviewType": "MJ",
+                  "player": {"id": 694497, "fullName": "Evan Carter"}
+                }
+              }
+            ],
+            "result": {"description": "Evan Carter singles on a sharp line drive."}
+          },
+          {
+            "about": {"atBatIndex": 60, "inning": 8, "halfInning": "bottom"},
+            "matchup": {
+              "batter": {"id": 702222, "fullName": "Justin Crawford"},
+              "pitcher": {"id": 596001, "fullName": "Jakob Junis"}
+            },
+            "playEvents": [
+              {"index": 0, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}}, "count": {"balls": 0, "strikes": 1, "outs": 1}},
+              {"index": 1, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}}, "count": {"balls": 0, "strikes": 2, "outs": 1}},
+              {"index": 2, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}, "hasReview": true}, "count": {"balls": 0, "strikes": 3, "outs": 2}}
+            ],
+            "result": {"description": "Justin Crawford challenged (pitch result), call on the field was confirmed: Justin Crawford called out on strikes."}
+          },
+          {
+            "about": {"atBatIndex": 72, "inning": 10, "halfInning": "top"},
+            "matchup": {
+              "batter": {"id": 694671, "fullName": "Wyatt Langford"},
+              "pitcher": {"id": 661395, "fullName": "Jhoan Duran"}
+            },
+            "playEvents": [
+              {"index": 0, "type": "pitch", "details": {"call": {"code": "B", "description": "Ball"}}, "count": {"balls": 1, "strikes": 0, "outs": 0}},
+              {"index": 2, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}}, "count": {"balls": 1, "strikes": 1, "outs": 0}},
+              {
+                "index": 5,
+                "type": "pitch",
+                "details": {"call": {"code": "C", "description": "Called Strike"}, "hasReview": true},
+                "count": {"balls": 1, "strikes": 2, "outs": 0},
+                "reviewDetails": {
+                  "isOverturned": true,
+                  "challengeTeamId": 143,
+                  "reviewType": "MJ",
+                  "player": {"id": 592663, "fullName": "J.T. Realmuto"}
+                }
+              }
+            ],
+            "result": {"description": "Wyatt Langford singles on a fly ball."}
+          },
+          {
+            "about": {"atBatIndex": 74, "inning": 10, "halfInning": "top"},
+            "matchup": {
+              "batter": {"id": 669394, "fullName": "Jake Burger"},
+              "pitcher": {"id": 661395, "fullName": "Jhoan Duran"}
+            },
+            "playEvents": [
+              {
+                "index": 0,
+                "type": "pitch",
+                "details": {"call": {"code": "C", "description": "Called Strike"}, "hasReview": true},
+                "count": {"balls": 0, "strikes": 1, "outs": 1},
+                "reviewDetails": {
+                  "isOverturned": true,
+                  "challengeTeamId": 143,
+                  "reviewType": "MJ",
+                  "player": {"id": 592663, "fullName": "J.T. Realmuto"}
+                }
+              }
+            ],
+            "result": {"description": "Jake Burger called out on strikes."}
+          },
+          {
+            "about": {"atBatIndex": 79, "inning": 10, "halfInning": "bottom"},
+            "matchup": {
+              "batter": {"id": 656941, "fullName": "Kyle Schwarber"},
+              "pitcher": {"id": 641302, "fullName": "Tyler Alexander"}
+            },
+            "playEvents": [
+              {"index": 0, "type": "pitch", "details": {"call": {"code": "B", "description": "Ball"}}, "count": {"balls": 1, "strikes": 0, "outs": 1}},
+              {"index": 1, "type": "pitch", "details": {"call": {"code": "B", "description": "Ball"}}, "count": {"balls": 2, "strikes": 0, "outs": 1}},
+              {"index": 2, "type": "pitch", "details": {"call": {"code": "C", "description": "Called Strike"}}, "count": {"balls": 2, "strikes": 1, "outs": 1}},
+              {
+                "index": 4,
+                "type": "pitch",
+                "details": {"call": {"code": "C", "description": "Called Strike"}, "hasReview": true},
+                "count": {"balls": 2, "strikes": 2, "outs": 1},
+                "reviewDetails": {
+                  "isOverturned": false,
+                  "challengeTeamId": 143,
+                  "reviewType": "MJ",
+                  "player": {"id": 656941, "fullName": "Kyle Schwarber"}
+                }
+              }
+            ],
+            "result": {"description": "Kyle Schwarber called out on strikes."}
+          }
+        ]
+      }
+    }
+  },
+  "statcast_rows": [
+    {"game_pk": "823488", "at_bat_number": "27", "pitch_number": "3", "inning": "4", "inning_topbot": "Top", "balls": "1", "strikes": "1", "outs_when_up": "2", "home_score": "0", "away_score": "3", "bat_score": "3", "fld_score": "0", "on_1b": "", "on_2b": "", "on_3b": "", "description": "called_strike", "home_win_exp": "0.209", "bat_win_exp": "0.791"},
+    {"game_pk": "823488", "at_bat_number": "61", "pitch_number": "3", "inning": "8", "inning_topbot": "Bot", "balls": "0", "strikes": "2", "outs_when_up": "1", "home_score": "0", "away_score": "3", "bat_score": "0", "fld_score": "3", "on_1b": "", "on_2b": "", "on_3b": "", "description": "called_strike", "home_win_exp": "0.053", "bat_win_exp": "0.053"},
+    {"game_pk": "823488", "at_bat_number": "73", "pitch_number": "3", "inning": "10", "inning_topbot": "Top", "balls": "1", "strikes": "1", "outs_when_up": "0", "home_score": "3", "away_score": "3", "bat_score": "3", "fld_score": "3", "on_1b": "", "on_2b": "607043", "on_3b": "", "description": "called_strike", "home_win_exp": "0.505", "bat_win_exp": "0.495"},
+    {"game_pk": "823488", "at_bat_number": "75", "pitch_number": "1", "inning": "10", "inning_topbot": "Top", "balls": "0", "strikes": "0", "outs_when_up": "1", "home_score": "3", "away_score": "4", "bat_score": "4", "fld_score": "3", "on_1b": "", "on_2b": "694671", "on_3b": "", "description": "called_strike", "home_win_exp": "0.327", "bat_win_exp": "0.673"},
+    {"game_pk": "823488", "at_bat_number": "80", "pitch_number": "4", "inning": "10", "inning_topbot": "Bot", "balls": "2", "strikes": "1", "outs_when_up": "1", "home_score": "3", "away_score": "5", "bat_score": "3", "fld_score": "5", "on_1b": "805249", "on_2b": "592663", "on_3b": "", "description": "called_strike", "home_win_exp": "0.225", "bat_win_exp": "0.225"}
+  ]
+}

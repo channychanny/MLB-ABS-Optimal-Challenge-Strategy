@@ -1,0 +1,11 @@
+{
+  "說明": "2026-09-14 官方原始回應摘錄；欄位是打方分差與打方勝率，不是主隊視角。",
+  "來源": "https://baseballsavant.mlb.com/game-strategy-explorer",
+  "查詢": {"type": "winexp", "params": {"inning": 4, "half": "Top", "outs": 0, "perspective": "home", "is_by_count": true, "runners": {"1b": false, "2b": false, "3b": false}}},
+  "wp_excerpt": [
+    {"inning": 4, "bottom_top": "Top", "outs": 0, "bases_cd": 0, "ball_count": 0, "strike_count": 1, "bat_wins_minus_5": 0.07699999999999996, "bat_wins_5": 0.92},
+    {"inning": 4, "bottom_top": "Top", "outs": 0, "bases_cd": 0, "ball_count": 1, "strike_count": 0, "bat_wins_minus_5": 0.08099999999999996, "bat_wins_5": 0.922}
+  ],
+  "re_excerpt": {"bases": 0, "outs": 0, "balls": 0, "strikes": 0, "run_expectancy": 0.494055272813423, "source_n": 45515, "source_year": 2025},
+  "九局平手邊界": {"source_inning": 10, "half": "top", "outs": 0, "bases": 2, "balls": 0, "strikes": 0, "home_score_diff": 0, "home_win_probability": 0.5}
+}
