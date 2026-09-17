@@ -1,0 +1,88 @@
+{
+  "schema_version": "rule-regimes-v1",
+  "regimes": [
+    {
+      "id": "mlb-2026",
+      "competition": "MLB",
+      "season": 2026,
+      "abs_format": "challenge",
+      "initial_challenges": 2,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "confirmed",
+      "extra_inning_rule_status": "confirmed",
+      "source": "https://www.mlb.com/press-release/press-release-mlb-announces-abs-challenge-system-coming-to-the-major-leagues-beginning-in-the-2026-season"
+    },
+    {
+      "id": "aaa-2025",
+      "competition": "Triple-A",
+      "season": 2025,
+      "abs_format": "challenge",
+      "initial_challenges": 2,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "confirmed",
+      "extra_inning_rule_status": "confirmed",
+      "source": "https://baseballsavant.mlb.com/abs?gameType=regular&level=aaa&year=2025"
+    },
+    {
+      "id": "aaa-2024-before-2024-06-25",
+      "competition": "Triple-A",
+      "season": 2024,
+      "ends_on": "2024-06-24",
+      "abs_format": "challenge",
+      "format_confirmation_required": true,
+      "initial_challenges": 3,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "provisional_format_selection",
+      "extra_inning_rule_status": "provisional_not_primary_scope",
+      "notes": "6 月 25 日前 Challenge System 與 Full ABS 每週交替；必須為每場比賽明確提供格式。",
+      "source": "https://www.mlb.com/milb/news/triple-a-abs-challenge-system"
+    },
+    {
+      "id": "aaa-2024-il-after-2024-06-25",
+      "competition": "Triple-A",
+      "season": 2024,
+      "starts_on": "2024-06-25",
+      "league_ids": [117],
+      "abs_format": "challenge",
+      "initial_challenges": 2,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "confirmed",
+      "extra_inning_rule_status": "provisional_not_primary_scope",
+      "notes": "6 月 25 日起全面採 Challenge System；International League 測試每隊兩次。延長賽補充規則仍需以正式紀錄驗證。",
+      "source": "https://www.mlb.com/milb/news/triple-a-abs-challenge-system"
+    },
+    {
+      "id": "aaa-2024-pcl-after-2024-06-25",
+      "competition": "Triple-A",
+      "season": 2024,
+      "starts_on": "2024-06-25",
+      "league_ids": [112],
+      "abs_format": "challenge",
+      "initial_challenges": 3,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "confirmed",
+      "extra_inning_rule_status": "provisional_not_primary_scope",
+      "notes": "6 月 25 日起全面採 Challenge System；Pacific Coast League 維持每隊三次。延長賽補充規則仍需以正式紀錄驗證。",
+      "source": "https://www.mlb.com/news/abs-system-futures-game-strike-zone-box-broadcast"
+    },
+    {
+      "id": "aaa-2023-challenge",
+      "competition": "Triple-A",
+      "season": 2023,
+      "abs_format": "challenge",
+      "format_confirmation_required": true,
+      "initial_challenges": 3,
+      "successful_challenge_retained": true,
+      "refill_if_empty_each_extra_inning": true,
+      "status": "provisional_format_selection",
+      "extra_inning_rule_status": "provisional_not_primary_scope",
+      "notes": "2023 年同時測試 Challenge System 與 Full ABS；每場比賽必須明確提供格式。延長賽補充規則仍需以正式紀錄驗證。",
+      "source": "https://www.mlb.com/news/abs-system-gets-rigorous-test-at-futures-game"
+    }
+  ]
+}

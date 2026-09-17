@@ -1,0 +1,22 @@
+{
+  "schema_version": "phase2-dataset-contract-v1",
+  "competition": "MLB",
+  "game_type": "R",
+  "scheduled_innings": 9,
+  "feature_innings": [1, 9],
+  "splits": {
+    "train": [2019, 2021, 2022, 2023],
+    "validation": [2024],
+    "test": [2025],
+    "external": [2026]
+  },
+  "development_external_game_pks": [823244, 823569, 825027],
+  "score_difference_bands": [[0, 5], [6, 10], [11, null]],
+  "score_difference_clipping": false,
+  "re24_sampling": "first_observed_pitch_per_plate_appearance",
+  "re288_sampling": "all_observed_pitches",
+  "re_half_policy": "three_out_halves_only",
+  "boundary_fit_split": "train",
+  "boundary_estimator": "empirical_home_win_fraction_without_smoothing",
+  "notes": "僅工程資料契約；來源全季清冊、正式 commit 與 WP 校準尚未完成。九局平手只取最終勝負作標籤，不建立延長賽特徵或決策。"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "phase0-gate-requirements-v1",
+  "required_cohorts": [
+    {
+      "competition": "Triple-A",
+      "season": 2023,
+      "minimum_games": 3
+    },
+    {
+      "competition": "Triple-A",
+      "season": 2024,
+      "minimum_games": 3
+    },
+    {
+      "competition": "Triple-A",
+      "season": 2025,
+      "minimum_games": 3
+    },
+    {
+      "competition": "MLB",
+      "season": 2026,
+      "minimum_games": 3
+    }
+  ],
+  "minimum_extra_inning_games": 0,
+  "official_aggregate_comparison_required": true,
+  "maximum_attempt_relative_error": 0.01,
+  "maximum_overturn_rate_absolute_error": 0.01,
+  "notes": "每個年度至少三場只是最低門檻；樣本仍須涵蓋不同聯盟、日期、Challenge 額度、翻判結果與終局打席。延長賽不是本次研究範圍，不列為 Gate 必要條件。"
+}
