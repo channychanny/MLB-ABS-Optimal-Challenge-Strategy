@@ -61,4 +61,4 @@
 4. 以正式歷史樣本估計 RE 與九局平手邊界，處理再見排除偏差、年度規則差異及信賴區間。
 5. 將通過校準的 WP 接回反事實／Dynamic 原型，才處理 Phase 2 最終驗收。正式策略仍受 Dataset B Legal Opportunity 缺口限制。
 
-工作分解與狀態見 [Phase 2 地圖](../.scratch/phase2-models/map.md)。
+工作分解與狀態見 [Phase 2 地圖](../../../.scratch/phase2-models/map.md)。

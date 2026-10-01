@@ -62,6 +62,8 @@ game_pk + (at_bat_index + 1) + pitch_number
 
 Savant 的 `at_bat_number` 是一基底；Stats API 的 `atBatIndex` 是零基底。重複或無法解析的 join key 會直接拋錯，避免靜默覆寫。
 
+此三欄 join 是 Phase 0 已驗證 Challenge 擷取的契約，不可直接外推所有 Dataset A 歷史事件。敬遠與計時器違規會使兩來源的 `pitch_number` 不同。Dataset A v2 使用獨立事件對齊，保留來源編號與狀態核對證據；非投球事件不產生投球樣本。詳見 [Phase 2 資料契約](phase2_dataset.md#歷史事件對齊-v2)。
+
 ### `statcast_pre_pitch_state`
 
 此 namespace 僅存放判決前可用的狀態：
@@ -97,14 +99,30 @@ Phase 0 必要欄位缺失會令單場稽核失敗；壘包無人以空值表示
 | `reasonable_reasons` | 版本化 heuristic 命中的理由 |
 | `pre_pitch_state` | 決策前特徵 namespace |
 | `pitch_observation` | 事後觀察／標籤 namespace |
+| `abs_technical_availability` | 逐球 ABS 技術可用性；目前固定為 `unknown`，不得由無故障文字推定 `true` |
+| `post_replay_challenge_eligibility` | replay 後是否仍可提出 ABS Challenge；目前固定為 `unknown`，不得由無 replay 文字推定 `true` |
+| `source_eligibility_version` | 上述來源限制的版本；目前為 `abs-source-eligibility-evidence-v1` |
 
 Legal Opportunity 目前定義為：called ball／called strike 對某隊不利、該隊仍有額度，且不是官方名冊可明確判定的 position player pitching 情境。球員 metadata 不足時不臆測排除。官方定義另外排除 ABS technical outage；MLB 規則亦不允許 replay review 後再提出 ABS Challenge，但目前來源尚未提供可靠、逐球一致的排除旗標。因此 `legal_opportunity_criteria.status` 為 `provisional_source_limitations`，這兩種排除未完成前不可宣稱 Legal population 已與官方完全一致。
+
+2026-09-24 的 24 場來源盤點只把 `reviewType`、action 描述與 event type 作線索記錄；`MJ` 不能證明全場可用，沒有線索也不能證明沒有停用／replay。現有 2,751 個候選均保留上述兩欄 `unknown`，見[資格與切分預備報告](../reports/archive/phase2/dataset_b_readiness_2026-09-24.md)。
+
+Dataset B v2 暫定候選檔把 `decision_features` 與 `analysis_labels`、`arrival_target`、`alignment_evidence` 分開。`physical_pitch_index` 是第 1–9 局整場物理投球序號，只用於序列索引；`arrival_target.pitch_gap` 為同隊下一個暫定 adverse called-pitch 候選的物理投球間隔，若未再到達則量至 regulation 終點，並以 `next_opportunity_observed=false` 標明右設限。到達目標由未來資料重建，只能作 label，不能作決策時 predictor。ABS 技術停用及 replay 資格仍為 `unknown`；詳見[訓練前準備報告](../reports/archive/phase2/dataset_b_pretraining_preparation_2026-09-24.md)。
+
+**後續版本修正：**上述 v2 的 `censoring_boundary=regulation_end` 不能直接解讀為「額度仍在時的九局右設限」；若最後一次挑戰使額度歸零，舊 `pitch_gap` 會包含不在風險集的投球。新版 [`dataset-b-resource-aware-episodes-v1`](../reports/archive/phase2/dataset_b_resource_aware_arrival_2026-09-29.md) 另存 `pre_action_budget`、`actual_challenge`、`challenge_overturned`、`post_action_budget`、`outcome`、`regulation_end_coincident`、`gap`。`outcome` 僅可為 `budget_exhausted`（當下終止、`gap=0`）、`next_opportunity`（事件）或 `regulation_end`（額度仍在時的右設限）；1 筆額度耗盡恰逢 regulation 最後一球，以布林旗標另記。`post_action_budget` 與 `challenge_overturned` 是行動後欄位，嚴禁直接進入挑戰前模型；來源資格仍是 provisional。
+
+2026-09-29 的 `candidates_v4` 修正到達事件定義：下一次必須是**同隊、有額度、非明確位置球員投手**的 `provisional_opportunity`；`zero_budget` 和 `excluded_position_player` 不得終止到達間隔。13,132 筆風險集候選有 12,950 筆觀測到下一次、182 筆九局內右設限。舊版候選檔保留作歷史證據，不供新版模型使用。見[復原與輸入閘門報告](../reports/archive/phase2/dataset_b_challenge_recovery_2026-09-29.md)。
+
+後續觀察性分布在 `next_opportunity_observed=true` 時，才把同隊下一個風險集候選的 `decision_side`、局數／出局／壘包／剩餘額度及 `S1.wp_decision − S0.wp_decision` 當作**下一狀態／價值標籤**；右設限時沒有下一狀態標籤。WP 價值雙側缺支援者列 `unsupported`，不補零；固定 0、0.005、0.02 斷點的類別只用於粗略條件分布分析，並非 Challenge 使用門檻。這些事後欄位均不得回流至當前決策特徵。見[敏感度與下一機會分布](../reports/archive/phase2/dataset_b_followup_sensitivity_2026-09-29.md)。
 
 主要 opportunity dataset 只保留 `inning` 1–9；延長賽事件可出現在 audit ledger，但不進入本次研究的 Opportunity、RRA 或 Policy population。
 
 Reasonable Candidate v1 為研究用 heuristic，而非正式 policy：已知翻判成功、estimated challenge rate 達門檻，或球位接近好球帶邊緣且事後 run value 達門檻時標記為候選。因其使用事後資料，僅能作 label／篩選與敏感度分析。
 
 ## 已確認 feed 行為
+
+- 部分終局三振的逐球 count.outs 仍為球前出局數；只有打席總數、同事件打者三振及 outNumber 完全一致才接受，不能一律加一。2026-09-22 的五球驗證見 [覆蓋報告](../reports/archive/phase2/official_wp_opportunity_coverage.md)。
+- 完整逐球覆蓋另保存零額度候選與投手資格未知，不將其混入有額度的 provisional opportunity 分母；完整歷史事件對齊可保留兩來源不同投球編號。此工程支援不解除 technical outage／post-replay-review 限制。
 
 - Challenge 失敗時，feed 判決不變。
 - Challenge 成功時，feed 儲存修正後 ABS call；`original_call` 必須取相反值。

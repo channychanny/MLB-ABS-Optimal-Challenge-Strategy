@@ -3,11 +3,15 @@
 
 **Project Name:** MLB ABS Optimal Challenge Strategy  
 **中文名稱：** MLB ABS 最佳挑戰時機與資源配置分析系統  
-**版本：** v1.4  
+**版本：** v1.6
 **專案類型：** Data Science / Baseball Analytics / Decision Optimization  
 **主要技術：** Python、MLB Statcast、Minor League Statcast、MLB Stats API、Machine Learning、Dynamic Programming、Monte Carlo Simulation、Streamlit
 
-**v1.4 範圍決策：** 主要研究、Opportunity dataset、RRA 與 Policy Evaluation 僅涵蓋第 1–9 局；延長賽 Challenge policy 留待 regulation-inning MVP 完成後擴充。核心決策單位為 Decision Team，精確 pitcher／catcher 發起角色只供次要行為分析。
+**v1.6 主線範圍決議（2026-10-01）：** 不再以歷史所有不利判決預測未來「值得挑戰」機會的機率或額度期望值；未挑戰球缺少可靠翻判標籤及球員當下把握，不能把每個不利判決都當成可用機會。主要交付改為眼前已可挑戰情境的官方 S0／S1 WP、輔助 RE，以及人工額度成本情境下的條件式最低翻判把握；不能宣稱真實最優政策或正式 RRA。下文原訂的 Future Opportunity、`V(S,c)`、Dynamic Policy／RRA 章節保留歷史規劃，移為延伸研究，**不是本版驗收項目**。見[範圍決議](reports/archive/phase3/phase3_scope_decision_2026-10-01.md)。
+
+**v1.5 估值決策（2026-09-21）：** 主要研究使用固定官方 Savant WP／RE288，不再以自建 WP 作 MVP 前置條件。自建模型、全分差覆蓋及全季 Dataset A 擴充改列延伸研究，已完成成果保留。官方 ±5 是查表支援範圍，不是將大比分截成 5 分；正式策略仍須驗證未來分支跨界的處理。詳見 [主線契約](docs/official_wp_policy.md) 與 [ADR-0002](docs/adr/0002-official-wp-primary.md)。
+
+**v1.4 範圍決策（保留）：** 主要研究、Opportunity dataset、RRA 與 Policy Evaluation 僅涵蓋第 1–9 局；延長賽 Challenge policy 留待 regulation-inning MVP 完成後擴充。核心決策單位為 Decision Team，精確 pitcher／catcher 發起角色只供次要行為分析。
 
 ---
 
@@ -180,7 +184,7 @@ RRA(S,1) > RRA(S,2)
 
 ---
 
-## RQ5 — Player-Aware Strategy
+## RQ5 — Player-Aware Strategy（延伸研究）
 
 比較：
 
@@ -285,7 +289,9 @@ c=0,1,2
 
 ---
 
-## Dataset A — MLB Historical Game Data
+## Dataset A — MLB Historical Game Data（保留供延伸研究）
+
+本資料集已完成的建置與 RE 開發成果保留；下列自建模型用途不再是主要研究的必要前置條件，全季取得暫緩。
 
 主要來源：
 
@@ -467,6 +473,8 @@ Future Opportunity Model 主要估計 Legal / Reasonable Opportunity 的到達�
 
 # 10. 核心資料結構
 
+本節 Player Context 欄位保留供延伸研究；官方 WP 主線不要求或宣稱支援球員個人化估值。
+
 一筆資料基本單位：
 
 > Pitch × Game State
@@ -508,6 +516,8 @@ Platoon
 ---
 
 # 11. Feature Engineering
+
+本節球員強度特徵為延伸研究設計，不是官方 WP 主線的必要輸入。
 
 ## Game State
 
@@ -565,10 +575,12 @@ Platoon
 
 # 12. Model 1 — Run Expectancy Baseline
 
+2026-09-21 更新：主線採固定官方 RE288 作輔助解釋與靜態基準；以下獨立重算 RE24／RE288 的方法保留供延伸研究與既有成果說明，不是 MVP 必要條件。
+
 本專案不將既有 Run Expectancy 方法視為主要創新。採用：
 
-1. MLB Baseball Savant 公開 RE24 / RE288 作為 Official External Baseline。
-2. 使用本研究 Dataset A 獨立重算 RE24 / RE288，確保年份範圍、資料清理與結果可重現。
+1. 主線使用已固定的 MLB Baseball Savant RE288 作為官方基準。
+2. 延伸研究使用 Dataset A 獨立重算 RE24 / RE288，確保年份範圍、資料清理與結果可重現。
 
 官方 baseline 參考：
 
@@ -618,114 +630,25 @@ WinProbability
 
 ---
 
-# 13. Model 2 — Win Probability Model
+# 13. Model 2 — 官方 Win Probability 估值
 
-本專案採取兩層 WP 架構：
+主要研究使用固定的 `savant-baseline-v2` Game Strategy Explorer WP 快照，而非自行訓練勝率模型。用同一快照分別估計原判維持 S0 與翻判 S1，再轉換至 Decision Team 視角；逐球 observed WP／delta 不能取代反事實估值。
 
-## External WP Baseline
+非終局狀態必須檢查轉移後是否在主隊分差 −5 至 +5 的支援範圍。不截尾、不把大比分當成「5 分以上」合併格、不插補缺值。真正勝負終局按規則給 0／1；九局平手使用固定版本的 Regulation Boundary Value。RE288 的狀態維度不受 WP 分差欄位限制。
 
-前期直接使用 Baseball Savant 公開的：
+當前兩側可查表只是第一層閘門，未來分支仍可能跨界並返回。正式 Dynamic Policy 前需驗收 continuation、視野、對手策略與敏感度分析；不足時只能交付明確限定的估值／策略，不宣稱全場最適。
 
-- `home_win_exp`
-- `bat_win_exp`
-- Game Strategy Explorer Win Probability table
-
-用途：
-
-- 快速跑通 Counterfactual / Dynamic pipeline prototype
-- 作為 league-average WP benchmark
-- 驗證自行訓練模型是否出現明顯偏差
-
-Savant WP 不作為最終唯一依據，因其完整模型規格、版本更新與全部內部處理不由本專案控制，且不包含 batter / pitcher 等 Player Context。
-
----
-
-## Reproducible Research WP Model
-
-正式研究結果使用本專案自行訓練、可重現且可校準的 WP Model。
-
-Target：
-
-\[
-Y=
-\begin{cases}
-1 & Team\ eventually\ wins\\
-0 & Team\ eventually\ loses
-\end{cases}
-\]
-
----
-
-## Baseline
-
-Logistic Regression
-
----
-
-## Statistical Model
-
-GAM
-
----
-
-## Machine Learning Model
-
-XGBoost
-
-XGBoost 只有在 out-of-sample calibration 或 scoring rule 明確優於較簡單模型時才作為主要模型；否則優先使用較容易解釋與重現的 Logistic Regression / GAM。
-
----
-
-## Model A
-
-\[
-WP=f(GameState)
-\]
-
----
-
-## Model B
-
-\[
-WP=
-f(GameState,PlayerContext)
-\]
+自建 Logistic Regression／GAM／XGBoost、league-average Model A 與 Player-Aware Model B 都保留為延伸研究，不是 MVP 必要條件。既有工程成果不刪除。
 
 ---
 
 # 14. Win Probability Evaluation
 
-主要指標：
+主線先報告固定官方快照的覆蓋率、來源限制與分組樣本支持，再以 Brier Score、Log Loss 與 Calibration Curve 作外部模型診斷；不以 Accuracy 為主要指標，不宣稱本專案已訓練或校準官方 WP。
 
-- Brier Score
-- Log Loss
-- Calibration Curve
-- 與 Savant WP 的 state-level comparison
+官方頁面宣告來源 2016–2025，RE 回應標示 2025，不能將 2025 稱為官方 WP 獨立 holdout。Dataset B 的 Future Opportunity／策略評估需另行鎖定時間 cohort、規則 regime 與 game-level split；2026 已用於開發的比賽不能再作獨立外部成效證據。
 
-不以 Accuracy 作主要評估指標。
-
----
-
-## Temporal Validation
-
-建議：
-
-```text
-Train:
-2019、2021–2023
-
-Validation:
-2024
-
-Test:
-2025
-```
-
-2026 MLB 作：
-
-> External / Prospective Validation
-
-自行訓練模型與 Savant WP 的差異需按 inning、leverage、score differential、base-out state 與 count 分組檢查，而非只比較整體平均。
+原 Dataset A 切分（Train 2019／2021–2023、Validation 2024、Test 2025、External 2026）保留給自建模型延伸研究，不套用成官方 WP 的訓練程序。詳細限制見 [評估設計](docs/evaluation_design.md)。
 
 ---
 
@@ -760,13 +683,15 @@ WP(S_1)-WP(S_0)
 
 ### Final Research Result
 
-使用自行訓練且通過 calibration 的 WP Model 計算 \(S_0\) 與 \(S_1\)，並以 Savant WP 結果作 robustness comparison。
+使用同一份固定官方 WP 快照計算 \(S_0\) 與 \(S_1\)，並依當前估值與未來分支支援性分別驗收；自建模型比較保留為延伸研究。
 
 不得只把實際逐球資料中的單一 `home_win_exp` 或既有 delta 欄位直接視為 Challenge counterfactual，因為每個 Challenge Situation 需要分別估值實際未發生的另一個 state。
 
 ---
 
 # 16. Model 4 — Future Challenge Opportunity Model
+
+模型不能只估計未來次數，還需到達時間、條件狀態／價值分布、行動依賴轉移及明示成功機率。零剩餘額度造成的 Legal Opportunity 缺失不是沒有潛在不利判決；須處理歷史策略的 censoring。先做經驗／統計基線，不強制使用 XGBoost。
 
 使用真實：
 
@@ -803,6 +728,8 @@ TimeToNextChallengeOpportunity
 ---
 
 # 17. Model 5 — Dynamic Challenge Value
+
+以下狀態中的 PlayerContext 僅用於延伸研究；主線不含此維度。正式求解前須通過未來分支與邊界設計閘門，不能直接將合成原型視為全場模型。
 
 核心決策情境：
 
@@ -1178,7 +1105,7 @@ V(S,1)-V(S,0)
 
 ---
 
-## Player Effect
+## Player Effect（延伸研究）
 
 展示：
 
@@ -1189,9 +1116,9 @@ BatterStrength
 
 ---
 
-## WP Calibration
+## 官方 WP 機率品質診斷
 
-展示模型 probability quality。
+展示固定外部模型的 probability quality 與來源重疊限制，不宣稱本專案完成 WP 訓練／校準。自建模型校準屬延伸研究。
 
 ---
 
@@ -1353,19 +1280,27 @@ MLB 2026 ABS ────────┤
 
 此階段目標是驗證資料與決策流程，不宣稱已完成最終研究模型。
 
-2026-09-15 使用者同意以官方 WP 表格主隊分差 −5 至 +5 作限定原型驗收。原三場／16 次挑戰中的 4 次大比分缺值保留，不改稱全數成功。此限制不縮減後續研究範圍。
+2026-09-15 使用者同意以官方 WP 表格主隊分差 −5 至 +5 作限定原型驗收。原三場／16 次挑戰中的 4 次大比分缺值保留，不改稱全數成功。這是當時的原型驗收決策；2026-09-21 起後續主線改依官方快照支援及明示邊界設計限定結論，不外推為全分差可靠估值。
 
-### Phase 2 — Reproducible Research Models
+### Phase 2 — 官方 WP 支援性與策略資料準備（修訂）
 
-1. 使用 Dataset A 自行重算 RE24 / RE288
-2. 建立並校準 league-average WP Model A
-3. 將自行訓練 WP 替換進 Counterfactual / Dynamic pipeline
-4. 以歷史最終結果重估 Regulation Boundary Value
-5. 與 Savant baseline 比較並記錄差異
+1. 固定官方 WP／RE288 來源與主線契約。
+2. 預先鎖定 cohort，驗證 S0／S1 覆蓋率與各類缺值原因。
+3. 完整化 Legal／候選機會母體，保留未知來源限制及歷史額度造成的 censoring。
+4. 鎖定未來跨界 continuation、九局平手邊界敏感度及決策視野。
+5. 鎖定 Dataset B 時間切分與開發樣本清單。
 
-自建資料與模型保留真實分差，不截成 ±5；依分差絕對值 0–5、6–10、11 分以上分組報告樣本量與預測表現。資料稀少或超出訓練支持範圍時需標記不確定性，不能把「模型可以輸出數值」當作「估值已可靠」。工作拆分見 [Phase 2 工作地圖](.scratch/phase2-models/map.md)。
+原 Phase 2 已完成的 Dataset A、Train-only RE、對齊與重播成果保留；全季取得、儲存壓縮、自建 WP 訓練及整合暫緩，不改稱已完成。見 [保留工作地圖](.scratch/phase2-models/map.md)。目前執行順序見 [官方 WP 工作地圖](.scratch/official-wp-policy/map.md)。
+
+2026-10-01 修訂後 Phase 2 的**限定資料與原型證據包**已收尾：固定 91 場及第 1–9 局暫定候選、來源未知、雙側 WP 支援、九局平手直接終局敏感度均有可重播紀錄。這授權 Phase 3 的明示假設原型；不表示上述第 3、4、5 項的正式研究 Gate 全數通過。尤其完整 Legal Opportunity、實證表外 continuation、完整開發清單及正式 holdout 仍未驗收。見 [Phase 2 收尾報告](reports/archive/phase2/official_wp_phase2_closeout_2026-10-01.md)。
 
 ### Phase 3 — Final MVP Evaluation
+
+2026-10-01 第一輪已完成**人工假設的九局內有限策略原型**：以每局合成未來機會、WP 損失及翻判率倒推 0／1／2 次額度價值與情境門檻，並在固定 91 場暫定候選上比較永不挑戰、固定信心門檻及動態原型。見 [Phase 3 第一輪報告](reports/archive/phase3/phase3_synthetic_regulation_policy_2026-10-01.md)。下列正式 MVP 條件仍未完成：完整 Legal Opportunity、資料支持的未來 Game State／行動依賴轉移、表外 continuation、球員成功率及正式政策績效。不得將第一輪數值稱為實證最適策略、正式 RRA 或實際增勝。
+
+**2026-10-01 主線焦點更正：**第一優先是[已可挑戰情境下的決策隊伍預期勝率比較](reports/archive/phase3/phase3_win_decision_primary_2026-10-01.md)：同一官方快照的 S0／S1、指定主觀翻判率的立即勝率增益、可承受失敗額度成本與條件式建議。上段合成未來模型只作次要敏感度，不與官方 WP 疊加當作實證全場價值。ABS 故障／replay 資格影響完整候選母體的外推，不是這個已可挑戰情境決策公式的前置閘門。真實球員翻判率及增量額度價值仍待辨識，不能把人工成本門檻稱正式 RRA。
+
+**2026-10-01 可操作原型與更正：**已提供[本機瀏覽器輸入介面](reports/archive/phase3/phase3_option_value_and_ui_2026-10-01.md)，不需手寫 JSON。原版用 Train-only 兩機會近似計算單一醒目門檻，但其歷史球序／同質價值假設不足以代表真正額度價值；依[重新設計方案](reports/archive/phase3/phase3_option_value_redesign_plan_2026-10-01.md)，現行介面先列官方 WP／RE 兩判決影響，再列事先宣告的人工零／低／高額度成本及相應條件式門檻範圍。它不是統計信賴區間或正式 RRA；舊模型保留研究紀錄但不進即時建議。
 
 1. 建立 Future Opportunity Model
 2. 估計 \(V(S,0)\)、\(V(S,1)\)、\(V(S,2)\)
@@ -1377,11 +1312,11 @@ MLB 2026 ABS ────────┤
 
 最低完成條件：
 
-1. MLB Historical Dataset
-2. AAA ABS Challenge Dataset
+1. 已鎖定來源、規則與時間切分的研究資料
+2. 含未挑戰事件與額度資訊的 ABS Opportunity Dataset
 3. Savant RE288 / WP External Baseline Snapshot
-4. Independently Reproduced RE288
-5. Calibrated League-Average WP Model A
+4. 官方 WP 覆蓋率與分組支持報告
+5. 未來分支 continuation 與邊界敏感度驗收
 6. Counterfactual Challenge Value
 7. Future Challenge Opportunity Model
 8. \(V(S,0)\)、\(V(S,1)\)、\(V(S,2)\)
@@ -1396,7 +1331,11 @@ Streamlit 不屬於研究成功的必要條件。
 
 # 31. Full Version
 
-MVP 後加入：
+MVP 後視研究需要加入：
+
+- 自建全分差 WP、訓練／校準與官方比較。
+- 全季 Dataset A、壓縮儲存與自算 RE／歷史九局平手邊界。
+
 
 1. Player-Aware WP
 2. Pitcher / Batter / On-deck effects
@@ -1541,9 +1480,9 @@ Savant 的 WP / RE 欄位與頁面可作外部基準，但可能出現：
 
 - 保存帶有下載日期與參數的 baseline snapshot
 - 保存欄位定義與來源 URL
-- 不以外部 baseline 作唯一最終模型
-- 正式研究結果使用可重現的自建 RE / WP
-- 外部數值只用於 prototype、sanity check 與 robustness comparison
+- 主線以固定官方快照為估值依據，清楚揭露外部方法不可完全重建的限制
+- 驗證當前反事實與未來分支覆蓋，不將超界分差截尾
+- 以來源、邊界與策略假設敏感度分析界定結論；自建模型比較列為延伸研究
 
 ---
 
@@ -1563,7 +1502,7 @@ Savant 的 WP / RE 欄位與頁面可作外部基準，但可能出現：
 
 ↓
 
-**Win Probability Modeling**
+**固定官方 WP 查表與覆蓋驗證**
 
 ↓
 
@@ -1621,6 +1560,8 @@ README / Documentation
 ---
 
 # 35. 最終專案核心
+
+下列 PlayerContext 項目只適用延伸研究；MVP 的核心輸入為 GameState、Decision Side 與 Challenges Remaining。
 
 本專案的主要制度固定為：
 

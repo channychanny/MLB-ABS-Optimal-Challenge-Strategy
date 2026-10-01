@@ -59,7 +59,7 @@
 
 v1 錯把 `bat_wins_minus_5` 當成主隊落後 5 分的主隊勝率，讀到 0.077／0.081，造成客隊差值 −0.4 個百分點。2026-09-15 比對原始回應、上下半局球數／跑者方向與 Statcast 主隊基準，確認應以打方分差與打方機率解讀；上半局反分差並取補數後，例子為客隊 +0.2 個百分點。`home`／`bat` 請求在本次觀察未改變回應，不能只依請求值推定已完成轉換。
 
-診斷依 `diagnosing-bugs` 流程，先以單一狀態重現，再建立兩個轉換回歸測試並確認失敗，修正後通過；原三場的 12 次查表已零方向警示。原始資料沒有修改，修正的是本地 adapter，不應再將暫時診斷稱為官方模型異常。小型來源摘錄在 `tests/fixtures/savant_explorer_excerpt.json`，決策記錄在 [ADR-0001](../docs/adr/0001-savant-probability-perspective.md)。
+診斷依 `diagnosing-bugs` 流程，先以單一狀態重現，再建立兩個轉換回歸測試並確認失敗，修正後通過；原三場的 12 次查表已零方向警示。原始資料沒有修改，修正的是本地 adapter，不應再將暫時診斷稱為官方模型異常。小型來源摘錄在 `tests/fixtures/savant_explorer_excerpt.json`，決策記錄在 [ADR-0001](../../../docs/adr/0001-savant-probability-perspective.md)。
 
 ## 合成 Dynamic 原型
 
@@ -69,8 +69,8 @@ v1 錯把 `bat_wins_minus_5` 當成主隊落後 5 分的主隊勝率，讀到 0.
 
 ## 尚未完成與下一步
 
-1. 視角轉換已由 [Issue 04](../.scratch/phase1-baseline/issues/04-wp-source-quality.md) 關閉；後續來源更新仍需回歸檢查。
-2. **已確認以官方 ±5 分覆蓋作限定驗收**；4 次大比分仍維持缺值，不擅自截尾。見 [Issue 05](../.scratch/phase1-baseline/issues/05-baseline-coverage.md)。
+1. 視角轉換已由 [Issue 04](../../../.scratch/phase1-baseline/issues/04-wp-source-quality.md) 關閉；後續來源更新仍需回歸檢查。
+2. **已確認以官方 ±5 分覆蓋作限定驗收**；4 次大比分仍維持缺值，不擅自截尾。見 [Issue 05](../../../.scratch/phase1-baseline/issues/05-baseline-coverage.md)。
 3. 已進入產品規格 Phase 2 的自建 RE／WP 工作；先建置 Dataset A 與 RE 開發流程，WP 校準尚未完成。不得將官方 snapshot 的資料窗口混成模型訓練切分。
 4. 正式模型前仍需 Legal Opportunity 的 technical outage／post-replay-review 排除、完整樣本覆蓋及專案 commit SHA。
 5. 本輪 2026 三場維持開發稽核樣本身分，後續不作獨立 external 成效證據。

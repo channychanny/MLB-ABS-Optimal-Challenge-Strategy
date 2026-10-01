@@ -27,12 +27,20 @@ _避免：_ Successful challenge（未說明成功意義時）
 _避免：_ Actual challenge、reasonable opportunity
 
 **Reasonable Challenge Candidate**：
-Legal Challenge Opportunity 中，依已版本化的研究準則被選為值得分析的候選球；它是分析標籤，不是實際行為或最佳 policy。
-_避免：_ Legal opportunity、optimal challenge
+Legal Challenge Opportunity 中，依已版本化的研究準則被選為值得分析的候選球；它是分析標籤，不等於球員當時判斷值得挑戰，也不是最佳 policy。
+_避免：_ Legal opportunity、實際值得挑戰的球、optimal challenge
 
 **Adverse Called Pitch**：
 對某決策方不利的主審判決；called strike 對打方不利，called ball 對守方不利。
-_避免：_ Incorrect call（除非已有 ABS 結果）
+_避免：_ Incorrect call（除非已有 ABS 結果）、值得挑戰的機會
+
+**Hypothetical Overturn Benefit**：
+由判決當下的 Game State 比較維持原判 S0 與假設翻判 S1 所得的決策隊伍勝率差；不含該球實際翻判機率，也不表示該球真的判錯。
+_避免：_ 實際翻判收益、值得挑戰標籤
+
+**Observed Next Adverse Call**：
+固定歷史球序中同一決策隊伍後續第一個不利判決，含當時已無額度的潛在判決；它不是改選當下行動後仍會出現的反事實機會。
+_避免：_ 下一個必然合法挑戰、最有價值的未來球
 
 ## 資源與決策
 
@@ -59,6 +67,14 @@ _避免：_ 終場剩餘額度
 **Challenge Option Value**：
 在相同 Game State 下，多保留一單位 Challenge Budget 對 Expected Win Probability 的邊際價值。
 _避免：_ 單次翻判價值
+
+**Illustrative Failure-Cost Scenario**：
+事先指定「挑戰失敗後少一次額度」相當於多少勝率損失的假設，用來檢查決策門檻的敏感度；它不是從歷史資料識別出的 Challenge Option Value。
+_避免：_ 實證額度成本、可信上下界
+
+**Conditional Break-even Threshold**：
+給定 S0／S1 的勝率差與一個明示的失敗額度成本假設，使現在挑戰與保留額度持平所需的當下主觀翻判機率；未驗證成本時，它不是正式 Required Recognition Accuracy。
+_避免：_ 球員實際信心、最優挑戰建議
 
 **Required Recognition Accuracy**：
 在指定 Game State 與 Challenges Remaining 下，現在提出 Challenge 優於保留額度所需的最低主觀 overturn probability。

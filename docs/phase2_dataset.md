@@ -1,5 +1,7 @@
 # Phase 2：Dataset A 與 RE 開發契約
 
+> 2026-09-21 決策：主要研究改用固定官方 WP／RE288，自建 WP 與全季 Dataset A 擴充改列延伸研究並暫緩。既有成果與資料契約保留；不截尾真實分差，不宣稱正式 Dynamic Policy／RRA 已完成。 本文件以下內容描述保留的工程契約與延伸研究重啟條件，不表示仍需先完成自建 WP 才能推進主線。見 [官方 WP 主線](official_wp_policy.md)。
+
 ## 目前階段
 
 Phase 1 已由使用者同意以官方 ±5 分範圍限定驗收。Phase 2 第一個工作切片實作了來源快照、歷史狀態／標籤、年度切分與 RE 開發估計；**WP 訓練、校準與替換估值來源尚未完成**。
@@ -14,12 +16,27 @@ Dataset A 是一般 MLB 歷史比賽，不是只含 Challenge 的 Dataset B。`d
 - 排除七局制及提早結束的縮短比賽；不將它們當作九局制。
 - feed 打席序號需連續，半局從一局上連續到真正終局。
 - feed 的所有 `isPitch=true` 事件需與兩隊官方 `numberOfPitches` 終場計數一致；包含延長賽的總數只作完整性檢查。
-- 第 1–9 局的 Statcast 三欄鍵必須與 feed 完全一致，缺球或多球整場排除；重複鍵直接報錯。
+- 第 1–9 局先經 v2 事件對齊；Statcast 事件需完整對應 feed 的實際投球與已支援的 `no_pitch`。留下的實際投球鍵與官方 feed 完全一致，缺漏或多出事件整場排除；原始重複鍵直接報錯。
 - feed 半局終點、逐局比分與終場比分需一致。逐球前比分不得倒退或超出原半局範圍。
 - 壘包空值表示無人；缺欄是資料缺漏，不視為空壘。
 - 無實際投球的打席不憑空生成逐球樣本；其數量保存於 `no_pitch_plate_appearances`。這會影響與其他 RE 定義的比較。
 
-這是嚴格的首版建置規則，可能排除具有來源差異的真實比賽。後續擴大樣本時必須統計排除率與原因，不能只保留成功案例便宣稱全年完整。快照中的 Statcast 是否包含非實際投球 action、跨日補賽與 feed 修訂差異均需另行稽核。
+這是保守建置規則，可能排除具有未支援來源差異的真實比賽。後續擴大樣本時必須統計排除率與原因，不能只保留成功案例便宣稱全年完整。跨日補賽與 feed 修訂差異仍需另行稽核。
+
+## 歷史事件對齊 v2
+
+Dataset schema 為 `historical-dataset-a-v2`，對齊器為 `historical-event-alignment-v1`。舊 v1 仍可驗證與重算開發 RE，用於修正前後比較；沒有對齊證據的舊資料不會自動升級成 v2。
+
+- 依打席事件順序核對，Statcast 編號須從 1 連續，feed 事件 index 須完整。`isPitch=true` 與已支援的自動好壞球須一對一匹配；明確 N 型 feed-only 非投球不要求 CSV 列。不能只依列數或固定編號偏移。
+- 同時檢查兩來源判決類型、前後球數、半局、事件前出局數及三壘跑者 ID。壘位由半局起點、runner movement 與代跑事件重建，再與打席終點的 `postOn*` 核對；不使用 Statcast 自己當驗證答案。
+- 同一事件的分段跑壘只有在路徑唯一時合併；全空 runner 佔位列必須另有同跑者的實際移動證據才可忽略。第三出局後不延續壘包狀態。未支援判決碼、缺欄或矛盾均排除，不猜測。
+- 來源判決碼採已驗證白名單。固定 feed 的觸身球 `H` 在來源計數上會令 `balls` 加一；這不是 ABS 判決，也不改變它屬實際投球的分類。新碼須先補來源證據與測試。
+- 輸出 `pitch_number` 保留 Statcast 原值；`alignment.feed_pitch_number`、`alignment.statcast_pitch_number` 與 `alignment.feed_event_index` 保存兩來源鍵。另保存 `feed_call_code`、前後球數、事件前出局／壘位及跑者 ID，均為稽核證據，不加入 `features`。
+- 非投球列存於 `games[].alignment.non_pitch_events`，不進 `rows`、RE24 或 RE288，也不是 ABS 可挑戰投球。`non_pitch_rows` 與 `renumbered_pitch_rows` 分別計數；無實際投球的整個打席不生成樣本。
+- 2026-09-19 補齊 `P / pitchout`（來源壞球數加一）及 `M / missed_bunt`（好球數加一），均為實際投球。N 型 `no_pitch` 必須明確非投球、無 call／投球編號／投球資料、不改球數，出局旗標亦須與同事件跑者證據一致；跑壘仍由完整事件重建。
+- N 型事件另存選用欄位 `games[].alignment.feed_only_events`，含原始事件 index、前後球數、事件前跑者／出局及出局旗標。不進 `non_pitch_rows`、投球或 RE；沒有這類事件時不新增空欄位，以保留既有資料內容。驗證器檢查重複事件、球數不變及壘包證據；未知型態與缺失實際投球仍排除。
+
+固定 20 場核對結果與限制見 [事件對齊驗證報告](../reports/archive/phase2/phase2_alignment_validation.md)。Phase 0 的 Challenge 三欄 join 不變。
 
 ## 特徵與標籤
 
@@ -79,10 +96,14 @@ Train 中「九局下三出局時平手」的比賽，每場只計一次，以�
 
 `dataset_content_sha256` 鎖定資料、契約與排除／覆蓋報告。runtime 與本機來源路徑不列入這個內容指紋，另外保存來源檔 hash 與程式檔 hash。完整檔案是否逐 byte 相同還取決於相同路徑與執行環境。這是意外變更檢查，不是數位簽章或來源真實性的密碼學認證。
 
-## 正式實驗前仍需完成
+## 延伸研究重啟後的驗收條件
 
-1. 已於 2026-09-16 新增年度來源清冊、逐日快取／重試與跨年度小批次開發 lock；[批次結果](../reports/phase2_batch_validation.md)有 15 場通過、5 場非投球對齊待處理。完整球季逐球覆蓋與正式 dataset lock 仍未完成，不能把下載工程完成視為研究資料定稿。
-2. 本專案 commit SHA 與可重現環境。使用者確認尚未設定 Git；沒有自行初始化、提交或重建。
+2026-09-19 Issue 07 已完成：同一 84 場／24,448 球全數通過，原 70 場完整資料指紋不變；192 項測試通過。開發 Train RE288 為 282／288 格有觀測，九局平手 9 場仍不足以採用正式邊界。最新證據見 [Issue 07 驗證](../reports/archive/phase2/phase2_issue07_validation.md)。
+
+2026-09-18 後續擴大工程樣本已選定 84 場，70 場／20,234 球通過，14 場保留排除。新增 2 場真實再見，Train 九局平手共 8 場；Validation 尚無 11+ 分支持。這推進了下列第 1 項的小樣本覆蓋驗證，但全季與正式鎖定仍未完成。新來源差異追蹤於 Issue 07；詳見 [覆蓋報告](../reports/archive/phase2/phase2_expanded_coverage.md)。
+
+1. 2026-09-18 的 v2 對齊讓同一固定 20 場／5,748 球全數通過；仍須驗證完整球季逐球覆蓋、排除率、真實再見與稀有狀態，並建立正式 dataset lock。不能把工程樣本成功視為研究資料定稿。
+2. Git 基準已建立；本輪對齊修正仍是未提交的工作目錄。正式實驗需記錄實際使用版本、乾淨工作目錄及固定環境；不能拿基準 SHA 宣稱包含尚未提交的修正。
 3. Logistic Regression WP、Train 內時間隔離的校準、2024 選型、2025 鎖定後評估、2026 外部驗證。
 4. 自建 WP 接回 S0／S1 與合成 Dynamic；官方共同範圍比較與大比分敏感度分析。
 5. Dataset B 的 technical outage／post-replay-review 排除仍未完成，後續正式 policy 評估持續阻擋；Dataset A 工程進展不代表此限制已解決。

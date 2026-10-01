@@ -35,7 +35,7 @@ Ticket 通常應包含：
 - Map：`.scratch/<effort>/map.md`
 - Child ticket：`.scratch/<effort>/issues/<NN>-<slug>.md`
 - Ticket 類型：使用 `Type:` 欄位，例如 `research`、`prototype`、`grilling` 或 `task`
-- Ticket 狀態：使用 `Status:` 欄位，例如 `open`、`claimed` 或 `resolved`
+- Ticket 狀態：使用 `Status:` 欄位，例如 `open`、`claimed`、`resolved` 或 `deferred`；`deferred` 表示保留歷史工作，但已不屬目前主線，不等於完成
 - 相依關係：使用 `Blocked by: NN, NN` 欄位
 - 認領：開始工作前將 `Status:` 改為 `claimed`
 - 完成：將結果附加於 `## Answer`，把 `Status:` 改為 `resolved`，並在 Map 加入簡短的結果指標

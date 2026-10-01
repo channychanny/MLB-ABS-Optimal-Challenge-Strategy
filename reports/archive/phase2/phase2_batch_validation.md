@@ -33,7 +33,7 @@
 
 例如 `718159` 打席 61：feed 先有 pitchNumber 0 的自動壞球，再有實際投球 1–5；Statcast 把自動壞球列入序號，終局 swinging_strike 的 pitch_number 為 6。直接刪自動列不會修正其他五球的錯位。
 
-目前維持整場排除，未改寫 Phase 0 join，未把 unknown 當作可接受。後續工作記錄於 [Issue 06](../.scratch/phase2-models/issues/06-no-pitch-alignment.md)。
+目前維持整場排除，未改寫 Phase 0 join，未把 unknown 當作可接受。後續工作記錄於 [Issue 06](../../../.scratch/phase2-models/issues/06-no-pitch-alignment.md)。
 
 ## 來源與可重播性
 

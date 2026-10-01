@@ -49,12 +49,33 @@ python -m abs_challenge.cli run-historical-batch --plan config/phase2_sample_pla
 python -m abs_challenge.cli run-historical-batch --plan config/phase2_sample_plan.json --cache-dir data/raw/phase2_cache_2026-09-16 --artifact-dir data/processed/phase2_batch_2026-09-16 --offline --output data/processed/phase2_batch_next_replay.json
 ```
 
-exit code 0 表示所選場次全部通過；1 表示缺來源、空日期或有被排除場次，且報告已保存；2 表示計畫、參數或輸出路徑錯誤。這批目前預期回傳 1，不能當作全數通過。
+exit code 0 表示所選場次全部通過；1 表示缺來源、空日期或有被排除場次，且報告已保存；2 表示計畫、參數或輸出路徑錯誤。舊版 2026-09-16 批次回傳 1；2026-09-18 v2 使用同一來源與選樣回傳 0，不代表全季資料通過。
 
 ## 已知缺口與下一步
 
-本次發現敬遠保送與計時器違規的自動判決會使 Statcast 列數與 feed 真正投球不同；計時器事件還可能造成後續實際投球編號錯位。核心建置器尚未做重新對齊，整場排除保護仍保留。不能只刪掉 automatic_ball／automatic_strike 再直接按舊三欄 join。詳見 [Issue 06](../.scratch/phase2-models/issues/06-no-pitch-alignment.md)。
+敬遠保送與計時器違規的自動判決會使 Statcast 列數與 feed 真正投球不同，並可能造成後續實際投球編號錯位。[Issue 06](../.scratch/phase2-models/issues/06-no-pitch-alignment.md) 已以獨立對齊器核對事件、判決、球數及跑者狀態；未知型態仍整場排除，不可只刪自動判決後按舊三欄 join。批次 `summary.alignment` 保存非投球、跨來源編號不同、通過狀態核對的投球，以及無投球打席數量。
 
-目前樣本沒有通過稽核的再見或九局平手場次，這兩類真實資料驗證仍未完成；11+ 分也只有一場，不足以宣稱估值可靠。正式全季下載與 WP 訓練前先關閉對齊問題，並補足覆蓋與版本條件。
+固定 20 場全數通過後，新增 2 場九局平手，但兩場最終均主隊贏，開發平均 1.0 不具可採用的統計支持。仍沒有真實再見半局，11+ 分也只有一場。全季下載與 WP 訓練前仍需補足覆蓋、排除偏差與版本條件。
 
-使用者已確認尚未設定 Git。可繼續管線開發，但正式模型訓練前仍需本機 repository 與 commit；不要求一定上傳 GitHub，本輪未初始化或提交。
+Git 基準已依使用者授權建立；對齊修正的本輪執行記錄為 `worktree_clean=false`，仍是開發結果。驗證指令與前後比較工具見 [事件對齊報告](../reports/archive/phase2/phase2_alignment_validation.md)。舊來源、分片與報告均保留，新程式內容指紋會產生新分片，不覆寫舊檔。
+
+## 跨月份擴大樣本
+
+後續全季取得已於 2026-09-19 啟動：依固定清冊逐月全取，首月 2019-03 已完成；使用方式及容量限制見 [全季取得說明](phase2_season_acquisition.md)。以下仍保留原工程抽樣流程，不能將兩者的選樣範圍混用。
+
+[擴大計畫](../config/phase2_expanded_sample_plan.json) 固定五年度 4–9 月每月 15 日、每日最多三場，最多 90 場。沒有例行賽的日期保留 `no_eligible_games`，不另找日期替換。這仍是工程抽樣；原有來源重用固定快照，新來源保存各自取得時間，不宣稱為同一瞬間下載的全季快照。
+
+```powershell
+$env:PYTHONPATH = "src"
+$env:PYTHONIOENCODING = "utf-8"
+python -m abs_challenge.cli run-historical-batch --plan config/phase2_expanded_sample_plan.json --cache-dir data/raw/phase2_cache_2026-09-16 --artifact-dir data/processed/phase2_expanded_2026-09-18_network --output data/processed/phase2_expanded_next.json
+python scripts/summarize_historical_coverage.py --report data/processed/phase2_expanded_next.json --artifacts data/processed/phase2_expanded_2026-09-18_network --output data/processed/phase2_expanded_coverage_next.json
+```
+
+離線重播在第一個命令加 `--offline` 並換新的輸出檔名。報告工具核對 lock、選樣清單、分片及 Dataset A 指紋，按年度／月份保留全部選定場次作分母；來源失敗與稽核排除分開列出。按 Train／Validation 分列分差支持、再見半局及九局平手，RE 仍只 fit Train。
+
+`not_accepted_fraction` 是該工程樣本的描述比例；不是全季排除率估計。輸出完整 Train-only RE 格子及各格場次，沒有觀測仍為 null，少數場次或混合年度的九局平手平均仍不供正式估值。報告不計算 WP 信賴區間或宣稱模型可靠。
+
+本輪新來源差異追蹤於 [Issue 07](../.scratch/phase2-models/issues/07-expanded-alignment.md)。`complete_selected_sources` 在有空日期時按現行契約為 false；要分辨是否真的缺來源，應同時查看 `date_status_counts` 及逐場失敗類型。命令回傳 1 可能來自有排除場次或空日期，不等於下載程式崩潰。
+
+2026-09-19 Issue 07 已完成，使用同一快取及計畫、另存於 `data/processed/phase2_issue07_2026-09-19/`，84 場／24,448 球通過。50 筆 CSV 自動判決與 5 筆 feed-only N 事件分開保存；後者在逐場 `alignment.feed_only_events`，不計入批次 `non_pitch_rows`。兩個空日期仍使命令回傳 1；逐場接受結果及重播證據見 [最新驗證報告](../reports/archive/phase2/phase2_issue07_validation.md)。

@@ -2,7 +2,7 @@
 
 ## 定位
 
-本階段只驗證資料及決策流程。自建 WP／RE、Future Opportunity 的估計與正式策略評估仍按產品規格留在後續階段。
+本階段只驗證資料及決策流程。2026-09-21 決策將固定官方 WP／RE288 升為主要估值來源，自建 WP／RE 改列延伸研究；Future Opportunity 與正式策略評估仍未完成。見 [官方 WP 主線](official_wp_policy.md)。
 
 ## 公開介面與分工
 
@@ -47,7 +47,7 @@ RE 採未依再見截斷的半局表格：立即得分加上原半局剩餘 RE�
 
 `savant-regulation-tie-home-v1` 的主隊值為 **0.5**。來源是同份官方快照中第 10 局上、0 出局、二壘有人、0–0 球數、平手的 `bat_wins_0`，取補數轉為主隊值。這是從來源取得的外生值，不是默認每種比賽都五五波，也不是把比賽結束。
 
-只有九局下第三出局且平手時使用它；九局上第三出局平手仍需打九局下。未生成第 10 局決策或補充額度，未模擬延長賽策略。Phase 2 才重估歷史邊界值。
+只有九局下第三出局且平手時使用它；九局上第三出局平手仍需打九局下。未生成第 10 局決策或補充額度，未模擬延長賽策略。歷史邊界重估改列延伸研究；主線需對固定外生邊界作敏感度分析。
 
 ## 小樣本報告與禁止外推
 
@@ -69,4 +69,4 @@ CLI 示範固定對手不挑戰，成功機率 0.6，假設每分支下一球為
 
 報告內含 baseline／audit／feed／Gate hash、Python 版本與程式檔 hash。沒有本專案可用 commit SHA，或 worktree 不乾淨時，`formal_experiment_version_ready=false`。程式檔 hash 只供原型比對，不取代正式實驗版本基準。
 
-目前所有輸出維持 `formal_policy_evaluation_ready=false`。視角問題已修正；使用者已同意 ±5 分限定原型驗收，見 [覆蓋與最終驗收 Issue](../.scratch/phase1-baseline/issues/05-baseline-coverage.md)。自建模型及大比分可靠度由 [Phase 2](phase2_dataset.md) 接續。
+目前所有輸出維持 `formal_policy_evaluation_ready=false`。視角問題已修正；使用者已同意 ±5 分限定原型驗收，見 [覆蓋與最終驗收 Issue](../.scratch/phase1-baseline/issues/05-baseline-coverage.md)。後續以 [官方 WP 主線](official_wp_policy.md) 的覆蓋與未來分支閘門接續；[自建模型](phase2_dataset.md) 保留為延伸研究。

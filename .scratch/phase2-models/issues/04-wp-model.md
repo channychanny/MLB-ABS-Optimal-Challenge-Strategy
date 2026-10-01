@@ -1,7 +1,10 @@
 # 04 — WP Model A 訓練、校準與評估
 
+> 2026-09-21 排程更新：自建 WP 與全季資料擴充改列延伸研究，本 Issue 暫緩而非完成。保留以下歷史紀錄與重啟驗收條件；目前主線見 [官方 WP 工作地圖](../../official-wp-policy/map.md)。
+
 Type: task  
 Status: open
+Execution: deferred
 Blocked by: 01, 03
 
 ## 驗收條件
