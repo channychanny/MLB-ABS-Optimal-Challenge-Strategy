@@ -1,0 +1,102 @@
+{
+  "schema_version": "wp-coverage-sampling-v1",
+  "purpose": "engineering_coverage_not_policy_holdout",
+  "seed": "abs-wp-expansion-2026-09-23-v1",
+  "selection": "sha256_seed_stratum_game_pk",
+  "replacement": false,
+  "notes": "日期按跨月份工程驗證需求預先固定，不是全季機率抽樣。缺場不補日期，選定後來源失敗不遞補。僅第 1–9 局；2023 與 2024 PCL 三次制度不納入。",
+  "development_game_pks": [
+    823244,
+    823488,
+    823569,
+    824134,
+    824378,
+    825027
+  ],
+  "strata": [
+    {
+      "id": "aaa-2024-il-2024-07-20",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2024-07-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2024-il-2024-08-20",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2024-08-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2024-il-2024-09-10",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2024-09-10",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-il-2025-05-20",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2025-05-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-il-2025-07-20",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2025-07-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-il-2025-08-20",
+      "sport_id": 11,
+      "league_id": 117,
+      "date": "2025-08-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-pcl-2025-05-20",
+      "sport_id": 11,
+      "league_id": 112,
+      "date": "2025-05-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-pcl-2025-07-20",
+      "sport_id": 11,
+      "league_id": 112,
+      "date": "2025-07-20",
+      "take": 2
+    },
+    {
+      "id": "aaa-2025-pcl-2025-08-20",
+      "sport_id": 11,
+      "league_id": 112,
+      "date": "2025-08-20",
+      "take": 2
+    },
+    {
+      "id": "mlb-2026-2026-05-20",
+      "sport_id": 1,
+      "league_id": null,
+      "date": "2026-05-20",
+      "take": 2
+    },
+    {
+      "id": "mlb-2026-2026-07-20",
+      "sport_id": 1,
+      "league_id": null,
+      "date": "2026-07-20",
+      "take": 2
+    },
+    {
+      "id": "mlb-2026-2026-09-10",
+      "sport_id": 1,
+      "league_id": null,
+      "date": "2026-09-10",
+      "take": 2
+    }
+  ]
+}

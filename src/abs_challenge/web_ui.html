@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABS 挑戰勝率決策</title>
+  <link rel="stylesheet" href="/web_ui.css">
+  <script src="/web_ui.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">ABS</span><span>挑戰勝率決策</span></div>
+      <span class="mode">九局內 · 兩次挑戰制</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">DECISION TEAM · WIN PROBABILITY</p>
+        <h1>這一球，翻判後<br><em>差多少</em>？</h1>
+        <p class="intro">先看挑戰球隊的贏球機率與本半局預期得分如何改變；再看不同「保留額度成本」假設會讓挑戰門檻如何變動。目前沒有可靠的單一最優門檻。</p>
+      </section>
+
+      <div class="layout">
+        <section class="panel input-panel" aria-labelledby="form-title">
+          <div class="panel-heading"><span class="step">01</span><div><h2 id="form-title">輸入這一球</h2><p>以下比賽狀態都以「這一球投出前」為準；最後再選主審剛宣告的判決。</p></div></div>
+          <form id="decision-form">
+            <h3 class="form-section-title">比賽進行到哪裡？</h3>
+            <div class="field-grid three">
+              <label>第幾局？<input id="inning" type="number" min="1" max="9" step="1" value="5" required></label>
+              <label>上／下半局<select id="half"><option value="top">上半局（客隊進攻）</option><option value="bottom" selected>下半局（主隊進攻）</option></select></label>
+              <label>目前出局數<select id="outs"><option value="0">0 出局</option><option value="1" selected>1 出局</option><option value="2">2 出局</option></select></label>
+            </div>
+
+            <div class="field-group"><span class="field-label">投球前哪個壘包有人？（可複選）</span><div class="bases">
+              <label class="base"><input id="base1" type="checkbox" checked><span>一壘</span></label>
+              <label class="base"><input id="base2" type="checkbox"><span>二壘</span></label>
+              <label class="base"><input id="base3" type="checkbox"><span>三壘</span></label>
+            </div></div>
+
+            <div class="field-grid two">
+              <label>投球前好球數<input id="strikes" type="number" min="0" max="2" step="1" value="1" required></label>
+              <label>投球前壞球數<input id="balls" type="number" min="0" max="3" step="1" value="2" required></label>
+            </div>
+            <div class="field-grid two">
+              <label>主隊得分<input id="home_score" type="number" min="0" max="99" step="1" value="0" required></label>
+              <label>客隊得分<input id="away_score" type="number" min="0" max="99" step="1" value="0" required></label>
+            </div>
+            <div class="divider"></div>
+            <h3 class="form-section-title">剛才主審怎麼判？</h3>
+            <div class="field-grid two">
+              <label>主審原判<select id="original_call"><option value="strike" selected>好球（進攻方考慮挑戰）</option><option value="ball">壞球（防守方考慮挑戰）</option></select></label>
+              <label>可挑戰球隊還有幾次額度？<select id="budget"><option value="1" selected>剩 1 次</option><option value="2">剩 2 次</option></select></label>
+            </div>
+            <p class="hint">主審判好球時，進攻方可能挑戰；判壞球時，防守方可能挑戰。請填這一方目前剩餘的額度。</p>
+            <details class="advanced"><summary>進階設定：自行假設額度成本</summary><label>挑戰失敗、少一次額度的假設成本 <small>（勝率百分點；留空只看預設情境）</small><input id="custom-cost" type="number" min="0" max="100" step="0.01" placeholder="例如 0.5"></label><p class="hint">這不是已估出的球隊成本；它只用來問「如果一次額度值這麼多，門檻會是多少？」</p></details>
+            <label class="confirmation"><input id="pure-call" type="checkbox" required><span>確認這是單純的好壞球判決：同一球沒有跑壘、其他出局或複合事件。</span></label>
+            <button id="submit" class="primary-button" type="submit"><span>查看勝率與得分影響</span><span aria-hidden="true">→</span></button>
+            <p id="error" class="error" role="alert" hidden></p>
+          </form>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="result-title">
+          <div class="panel-heading"><span class="step">02</span><div><h2 id="result-title">這球的直接影響</h2><p>WP 是贏球機率；RE 是本半局的預期得分。兩者不相加。</p></div></div>
+          <div id="placeholder" class="placeholder"><div class="placeholder-icon">↗</div><h3>等待你的比賽情況</h3><p>完成左側表單後，先看官方 WP／RE，再看明示成本假設下的門檻敏感度。</p></div>
+          <div id="result" hidden>
+            <div class="side-line">目前可提出挑戰的一方：<strong id="decision-side"></strong></div>
+            <div class="wp-grid"><div class="wp-card"><span>不挑戰，原判維持 · 勝率</span><strong id="wp0"></strong></div><div class="wp-card accent"><span>挑戰且成功翻判 · 勝率</span><strong id="wp1"></strong></div></div>
+            <div class="impact"><span>翻判成功時，挑戰隊伍勝率改變</span><strong id="delta"></strong></div>
+          </div>
+          <div id="unsupported" class="unsupported" hidden><h3>官方勝率無法估值</h3><p id="unsupported-reason"></p></div>
+          <section id="re-result" class="re-result" aria-labelledby="re-title" hidden>
+            <div class="re-heading"><h3 id="re-title">得分角度：原半局預期得分（RE288）</h3><span>輔助解釋 · 非勝率</span></div>
+            <div class="wp-grid"><div class="wp-card"><span>原判維持 · 打方本半局預期得分</span><strong id="re0"></strong></div><div class="wp-card"><span>成功翻判 · 打方本半局預期得分</span><strong id="re1"></strong></div></div>
+            <p class="re-change">對挑戰方有利的預期得分變化：<strong id="re-delta"></strong></p>
+            <p class="re-note" id="re-perspective"></p>
+            <p class="re-note">RE 包含此判決立即造成的得分及本半局剩餘得分期望；不能與 WP 相加，也不能單獨換算為挑戰門檻。即使 WP 超出查表範圍，仍可保留此得分資訊。</p>
+          </section>
+          <section id="scenario-result" class="scenario-result" aria-labelledby="scenario-title" hidden>
+            <h3 id="scenario-title">如果保留一次額度值不同的勝率</h3>
+            <p>下列成本是事先宣告的示例假設，不是由資料估出的真實價值。門檻表示：你對眼前這球的翻判把握必須高於它，挑戰才在該假設下較有利。</p>
+            <div class="scenario-summary"><span>示例成本範圍對應的門檻</span><strong id="threshold-range"></strong><small id="range-explanation"></small></div>
+            <div class="sensitivity" id="sensitivity"></div>
+            <p class="sensitivity-note">「不計額度成本」只是立即判決效果的基準；低／高成本是假設，不是統計信賴區間或可信上下界。</p>
+            <div id="custom-result" class="custom-result" hidden></div>
+            <div class="caution"><strong>為何不直接使用舊的兩機會模型？</strong><p>它沿用歷史實際球序，並假設最多兩個未來機會同樣有價值且都會挑戰；不能代表現在改選挑戰後的未來。因此此頁不再把它算出的單一成本或門檻當成主要答案。舊程式與研究紀錄仍保留，供後續比較。</p></div>
+          </section>
+        </section>
+      </div>
+      <footer>本機研究原型 · 不研究延長賽挑戰 · 不把人工／歷史近似稱為正式最優策略</footer>
+    </main>
+  </div>
+</body>
+</html>

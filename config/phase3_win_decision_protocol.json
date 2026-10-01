@@ -1,0 +1,23 @@
+{
+  "schema_version": "phase3-decision-team-win-impact-v1",
+  "scope": "第 1–9 局、已可提出挑戰且仍有 1 或 2 次額度的條件式決策",
+  "objective": "決策隊伍預期勝率；RE 僅作輔助說明",
+  "probability_source": "declared_sensitivity_not_estimated_player_confidence",
+  "resource_cost_source": "declared_incremental_sensitivity_not_empirical_option_value",
+  "successful_branch_extra_shift": 0,
+  "overturn_probability_grid": [0.25, 0.5, 0.75, 0.9],
+  "detail_probability": 0.5,
+  "cost_scenarios": [
+    {"id": "immediate_only", "failure_cost_by_budget": {"1": 0.0, "2": 0.0}},
+    {"id": "small_resource_cost", "failure_cost_by_budget": {"1": 0.005, "2": 0.0025}},
+    {"id": "large_resource_cost", "failure_cost_by_budget": {"1": 0.02, "2": 0.01}}
+  ],
+  "action_tie_tolerance": 1e-12,
+  "formal_policy_evaluation_ready": false,
+  "notes": [
+    "官方 S0／S1 WP 為當下判決分支估值；p 與失敗額度成本未由球員資訊或反事實轉移估計。",
+    "主輸出是立即判決勝率增益及可承受的失敗額度成本；成本情境僅示範決策敏感度。",
+    "不對成功分支再加人工未來 WP 位移，避免與官方 WP 的未來價值混算。",
+    "未知 ABS 停用／replay 資格是固定候選母體限制，不是本條件式決策計算的前置閘門。"
+  ]
+}

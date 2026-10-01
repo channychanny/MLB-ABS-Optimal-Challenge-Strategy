@@ -256,6 +256,10 @@ def _coverage_summary(records, games, rows):
     censored = {r["game_pk"] for r in rows if r["re_censored"]}
     return {"selected_games": len(records), "accepted_games": len(games),
         "status_counts": dict(Counter(r["status"] for r in records)), "regulation_pitches": len(rows),
+        "alignment": {"non_pitch_rows": sum(g["alignment"]["non_pitch_rows"] for g in games),
+            "renumbered_pitch_rows": sum(g["alignment"]["renumbered_pitch_rows"] for g in games),
+            "state_verified_pitch_rows": sum(g["alignment"]["physical_pitch_rows"] for g in games),
+            "no_pitch_plate_appearances": sum(g["no_pitch_plate_appearances"] for g in games)},
         "regulation_tied_games": sum(g["regulation_tied"] for g in games),
         "walkoff_censored_games": len(censored), "coverage": groups,
         "exclusion_reasons": dict(Counter(r.get("reason") for r in records if r["status"] != "accepted")),

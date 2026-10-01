@@ -1,0 +1,31 @@
+{
+  "schema_version": "dataset-b-observational-baseline-protocol-v1",
+  "estimand": "固定 96 場清冊中可定位且來源可觀測的暫定風險集中，歷史實際路徑下同隊下一個暫定機會的物理投球間隔",
+  "input_gate_schema": "dataset-b-limited-model-input-gate-v1",
+  "training_split": "train",
+  "selection_split": "validation",
+  "held_out_splits": ["test", "external"],
+  "baseline_model": "pooled_constant_discrete_pitch_hazard",
+  "candidate_model": "shrunk_state_stratified_constant_discrete_pitch_hazard",
+  "conditioning_fields": ["pre_pitch_state.balls", "pre_pitch_state.strikes", "challenges_remaining"],
+  "smoothing_prior_pitch_exposures": [25, 100, 400],
+  "selection_metric": "negative_log_likelihood_per_pitch_exposure",
+  "primary_metric": "negative_log_likelihood_per_pitch_exposure",
+  "secondary_metric": "negative_log_likelihood_per_episode",
+  "forecast_horizons_pitches": [5, 10, 20],
+  "horizon_brier_population": "episodes whose event or no-event status is observable through the horizon; censored earlier episodes excluded and coverage reported",
+  "bootstrap_unit": "game_pk",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260929,
+  "risk_set_population": "provisional_opportunity",
+  "forbidden_predictor_fields": ["actual_challenge", "overturned", "s0", "s1", "arrival_target", "alignment_evidence", "source_eligibility"],
+  "limitations": [
+    "右設限似然假設在目前粗略預測欄位條件下非資訊性；遊戲階段可能使九局邊界設限與到達率相關",
+    "觀察性估計包含歷史挑戰行動對後續額度與狀態的影響，不是挑戰或不挑戰的反事實路徑",
+    "技術停用及 replay 後資格未知，五場無法定位比賽均從 Train 排除",
+    "只以投球前球數與剩餘額度分層，不估計完整狀態價值分布或正式策略"
+  ],
+  "training_rule": "所有 hazard 與全域收縮中心僅由 Train 估計；依 Validation 選擇 pooled 或 state-stratified 及收縮強度；Test 與 External 只作一次鎖定評估",
+  "formal_legal_opportunity_ready": false,
+  "formal_dynamic_policy_ready": false
+}

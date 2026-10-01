@@ -140,7 +140,7 @@ class RuleResolutionTests(unittest.TestCase):
         with self.assertRaisesRegex(RuleResolutionError, "explicit ABS format"):
             resolve_game_rules(feed)
 
-    def test_2025_triple_a_resolves_to_two_challenges(self) -> None:
+    def test_2025_pacific_coast_resolves_to_three_challenges(self) -> None:
         feed = game_metadata_feed(
             date="2025-05-11",
             sport_id=11,
@@ -151,10 +151,25 @@ class RuleResolutionTests(unittest.TestCase):
 
         rules = resolve_game_rules(feed)
 
-        self.assertEqual(rules.initial_challenges, 2)
-        self.assertEqual(rules.regime_id, "aaa-2025")
+        self.assertEqual(rules.initial_challenges, 3)
+        self.assertEqual(rules.regime_id, "aaa-2025-pcl")
         self.assertEqual(rules.rule_status, "confirmed")
         self.assertEqual(rules.extra_inning_rule_status, "confirmed")
+
+    def test_2025_international_league_resolves_to_two_challenges(self) -> None:
+        feed = game_metadata_feed(
+            date="2025-05-11",
+            sport_id=11,
+            sport_name="Triple-A",
+            league_id=117,
+            league_name="International League",
+        )
+
+        rules = resolve_game_rules(feed)
+
+        self.assertEqual(rules.initial_challenges, 2)
+        self.assertEqual(rules.regime_id, "aaa-2025-il")
+        self.assertEqual(rules.rule_status, "confirmed")
 
 
 if __name__ == "__main__":

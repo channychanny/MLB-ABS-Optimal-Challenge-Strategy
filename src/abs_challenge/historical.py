@@ -9,10 +9,11 @@ import json
 from typing import Any
 
 from .savant import REQUIRED_PRE_PITCH_FIELDS, index_statcast_rows
+from .historical_alignment import ALIGNMENT_VERSION, AUTOMATIC_CALLS, PHYSICAL_CALLS, align_historical_pitches
 from .state_value import GameState, checked_int
 
 
-DATASET_VERSION = "historical-dataset-a-v1"
+DATASET_VERSION = "historical-dataset-a-v2"
 SPLITS = {"train": [2019, 2021, 2022, 2023], "validation": [2024],
           "test": [2025], "external": [2026]}
 DEVELOPMENT_GAMES = {823244, 823569, 825027}
@@ -169,12 +170,14 @@ def _feed_summary(feed: dict[str, Any]) -> tuple[dict[str, Any], dict, dict]:
 
 def _build_game(feed: dict[str, Any], indexed: dict) -> tuple[dict[str, Any], list]:
     game, halves, expected = _feed_summary(feed)
-    if not expected or set(indexed) != set(expected):
-        raise ValueError(f"完整逐球鍵不符：缺少 {len(set(expected) - set(indexed))}、"
-                         f"多出 {len(set(indexed) - set(expected))}；不可用 ABS-only 資料")
+    aligned, game["alignment"] = align_historical_pitches(feed, indexed)
+    feed_keys = {(key[0], key[1], evidence["feed_pitch_number"]) for key, evidence in aligned.items()}
+    if not expected or feed_keys != set(expected) or len(aligned) != len(expected):
+        raise ValueError("對齊後實際投球鍵與官方 feed 不一致；不可用 ABS-only 資料")
     result, seen_pa = [], set()
     previous_scores = {"home": 0, "away": 0}
-    for key, row in sorted(indexed.items()):
+    for key, evidence in sorted(aligned.items()):
+        row = indexed[key]
         if any(field not in row for field in REQUIRED_PRE_PITCH_FIELDS):
             raise ValueError("缺少狀態欄位；壘包缺欄不可當成空壘")
         if row.get("game_type") != "R" or row.get("game_date") != game["game_date"]:
@@ -183,7 +186,7 @@ def _build_game(feed: dict[str, Any], indexed: dict) -> tuple[dict[str, Any], li
         for name in ("inning", "outs_when_up", "balls", "strikes", "home_score", "away_score"):
             values[name] = _integer(values[name], name)
         state = GameState.from_statcast(values)
-        if (state.inning, state.half) != expected[key]:
+        if (state.inning, state.half) != expected[key[0], key[1], evidence["feed_pitch_number"]]:
             raise ValueError("Statcast 局數與官方 feed 不符")
         half = halves[state.inning, state.half]
         batting = "away" if state.half == "top" else "home"
@@ -198,6 +201,7 @@ def _build_game(feed: dict[str, Any], indexed: dict) -> tuple[dict[str, Any], li
         result.append({"game_pk": game["game_pk"], "game_date": game["game_date"],
             "season": game["season"], "split": game["split"], "at_bat_number": key[1],
             "pitch_number": key[2], "pre_pitch_state": state.to_dict(),
+            "alignment": evidence,
             "features": model_features(state),
             "labels": {"home_win": game["home_win"],
                 "runs_to_half_end": remaining if half["complete"] else None},
@@ -259,7 +263,7 @@ def verify_dataset(dataset: dict[str, Any]) -> None:
     """驗證固定衍生內容；runtime 與來源 manifests 不參與可重播內容指紋。"""
     payload = {k: v for k, v in dataset.items()
                if k not in {"dataset_content_sha256", "input_manifests", "runtime"}}
-    if dataset.get("schema_version") != DATASET_VERSION or content_hash(payload) != dataset.get("dataset_content_sha256"):
+    if dataset.get("schema_version") not in {"historical-dataset-a-v1", DATASET_VERSION} or content_hash(payload) != dataset.get("dataset_content_sha256"):
         raise ValueError("Dataset A 版本或內容指紋不符")
     validate_contract(dataset["contract"])
     if content_hash(dataset["contract"]) != dataset["contract_sha256"]:
@@ -268,6 +272,8 @@ def verify_dataset(dataset: dict[str, Any]) -> None:
         raise ValueError("特徵名稱白名單不符")
     seen = set()
     row_counts = Counter()
+    aligned_counts, renumbered_counts = Counter(), Counter()
+    feed_pitch_keys, source_event_keys = set(), set()
     first_keys = {}
     games = {g["game_pk"]: g for g in dataset["games"]}
     if len(games) != len(dataset["games"]):
@@ -291,6 +297,27 @@ def verify_dataset(dataset: dict[str, Any]) -> None:
                 raise ValueError("同場逐球跨 split／年度／日期")
         if row["features"] != model_features(GameState(**row["pre_pitch_state"])):
             raise ValueError("特徵不符白名單或原始比分")
+        if dataset["schema_version"] == DATASET_VERSION:
+            evidence = row["alignment"]
+            state = row["pre_pitch_state"]
+            if (evidence["schema_version"] != ALIGNMENT_VERSION or evidence["state_checks_pass"] is not True
+                    or evidence["statcast_pitch_number"] != row["pitch_number"]
+                    or evidence["feed_call_code"] not in PHYSICAL_CALLS
+                    or any(evidence[f"{field}_before"] != state[field] for field in ("balls", "strikes", "outs", "bases"))):
+                raise ValueError("對齊證據與投球前狀態不一致")
+            checked_int(evidence["feed_pitch_number"], "feed_pitch_number", 1, 1000)
+            checked_int(evidence["feed_event_index"], "feed_event_index", 0, 10000)
+            runners = evidence["runner_ids_before"]
+            if len(runners) != 3 or sum(1 << i for i, runner in enumerate(runners) if runner is not None) != state["bases"]:
+                raise ValueError("對齊證據的跑者與壘包不一致")
+            pitch_key = row["game_pk"], row["at_bat_number"], evidence["feed_pitch_number"]
+            event_key = row["game_pk"], row["at_bat_number"], evidence["feed_event_index"]
+            if pitch_key in feed_pitch_keys or event_key in source_event_keys:
+                raise ValueError("對齊證據重複使用 feed 事件")
+            feed_pitch_keys.add(pitch_key)
+            source_event_keys.add(event_key)
+            aligned_counts[row["game_pk"]] += 1
+            renumbered_counts[row["game_pk"]] += row["pitch_number"] != evidence["feed_pitch_number"]
         if row["labels"]["home_win"] != game["home_win"] or type(game["home_win"]) is not int or game["home_win"] not in (0, 1):
             raise ValueError("同場勝負標籤不一致")
         remaining = row["labels"]["runs_to_half_end"]
@@ -305,3 +332,40 @@ def verify_dataset(dataset: dict[str, Any]) -> None:
     for game_pk, game in games.items():
         if not row_counts[game_pk] or row_counts[game_pk] != game["expected_regulation_pitches"] or row_counts[game_pk] != game["regulation_pitches"]:
             raise ValueError("衍生資料逐球列數與場次核對結果不一致")
+        if dataset["schema_version"] == DATASET_VERSION:
+            evidence = game["alignment"]
+            if (evidence["schema_version"] != ALIGNMENT_VERSION
+                    or evidence["physical_pitch_rows"] != aligned_counts[game_pk]
+                    or evidence["renumbered_pitch_rows"] != renumbered_counts[game_pk]
+                    or evidence["non_pitch_rows"] != len(evidence["non_pitch_events"])):
+                raise ValueError("場次對齊證據計數不一致")
+            for event in evidence["non_pitch_events"]:
+                event_key = game_pk, event["at_bat_number"], event["feed_event_index"]
+                row_key = game_pk, event["at_bat_number"], event["statcast_pitch_number"]
+                if (event_key in source_event_keys or row_key in seen
+                        or event["schema_version"] != ALIGNMENT_VERSION
+                        or event["state_checks_pass"] is not True
+                        or AUTOMATIC_CALLS.get(event["feed_call_code"]) != event["kind"]):
+                    raise ValueError("非投球對齊證據重複或不一致")
+                source_event_keys.add(event_key)
+                seen.add(row_key)
+            for event in evidence.get("feed_only_events", []):
+                event_key = game_pk, event["at_bat_number"], event["feed_event_index"]
+                if (event_key in source_event_keys or event["kind"] != "feed_only_no_pitch"
+                        or event["feed_call_code"] != "N" or event["state_checks_pass"] is not True
+                        or type(event["event_is_out"]) is not bool
+                        or "statcast_pitch_number" in event or "feed_pitch_number" in event
+                        or event["balls_before"] != event["balls_after"]
+                        or event["strikes_before"] != event["strikes_after"]):
+                    raise ValueError("僅 feed 非投球證據重複或不一致")
+                checked_int(event["at_bat_number"], "at_bat_number", 1, 10000)
+                checked_int(event["feed_event_index"], "feed_event_index", 0, 10000)
+                checked_int(event["balls_before"], "balls_before", 0, 3)
+                checked_int(event["strikes_before"], "strikes_before", 0, 2)
+                checked_int(event["outs_before"], "outs_before", 0, 2)
+                checked_int(event["bases_before"], "bases_before", 0, 7)
+                runners = event["runner_ids_before"]
+                if len(runners) != 3 or sum(1 << i for i, runner in enumerate(runners)
+                                           if runner is not None) != event["bases_before"]:
+                    raise ValueError("僅 feed 非投球證據的跑者與壘包不一致")
+                source_event_keys.add(event_key)

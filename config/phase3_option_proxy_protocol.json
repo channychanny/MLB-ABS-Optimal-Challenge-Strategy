@@ -1,0 +1,22 @@
+{
+  "schema_version": "phase3-two-future-opportunity-proxy-v1",
+  "scope": "第 1–9 局、已可挑戰情境，僅用 Train 歷史候選估計未來至多兩個同隊不利判決的額度價值近似",
+  "training_split": "train",
+  "evaluation_splits": ["validation", "test", "external"],
+  "stratum_fields": ["inning", "decision_side"],
+  "smoothing_pseudo_candidates": 50,
+  "future_success_probability_reference": 0.5,
+  "future_success_probability_sensitivity": [0.25, 0.5, 0.75],
+  "current_success_probability_grid": [0.25, 0.5, 0.75, 0.9],
+  "cohort_detail_current_probability": 0.5,
+  "unsupported_future_value_handling": "excluded_from_mean_and_reported_not_zero_filled",
+  "historical_actions_not_predictors": true,
+  "formal_counterfactual_option_value_ready": false,
+  "limitations": [
+    "同隊後續不利判決依歷史實際球序觀察，不等於改選當前行動後的反事實球序。",
+    "只近似最多兩個未來機會，且以相同條件平均正向官方 WP 差值代表機會價值；不是全場最優 V(S,c)。",
+    "零額度的潛在不利判決仍進未來候選序列，避免把歷史額度耗盡誤判為不再有機會。",
+    "未來 WP 不支援的候選不填零；條件均值只根據可估值樣本，可能有選擇偏差。",
+    "官方 WP 可能包含既有策略效果；本近似成本只作主線條件式決策的敏感度參考。"
+  ]
+}

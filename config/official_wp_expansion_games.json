@@ -1,0 +1,272 @@
+{
+  "schema_version": "wp-coverage-locked-games-v1",
+  "selection_sha256": "07012e576e2bdbf0d29e18c9f00d17478388b18aecbc6da855a70399a30a9191",
+  "purpose": "engineering_coverage_not_policy_holdout",
+  "coverage_evaluated": false,
+  "games": [
+    {
+      "game_pk": 752594,
+      "date": "2024-07-20",
+      "rank_sha256": "4a1dd18f8dcb1ef6e54f11b123beab66e025cc4ad13fa9fee1cc4b5b6e0f4324",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 753574,
+      "date": "2024-07-20",
+      "rank_sha256": "6b673d72b7d837280f87187bd30ed6cb7275931e404fe06337f9e5b7b53671ba",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 752664,
+      "date": "2024-08-20",
+      "rank_sha256": "1f5cefe48ac75042f1092177029f639411918ebd12b7cc0ad5c7a5069bff7e62",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 752811,
+      "date": "2024-08-20",
+      "rank_sha256": "31409d9179e507d116898c6397fa6d8e68756fbac63daa267280df7876f977e2",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 753323,
+      "date": "2024-09-10",
+      "rank_sha256": "00c8b6822897e2b89acf1a5225db13d715fdc323fa99ab64855dbddac7fc217c",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-09-10",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 753402,
+      "date": "2024-09-10",
+      "rank_sha256": "26851a5096d26cd354baaefdf021f5a915746d178ac1e837d7fbf9984c759204",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2024-il-2024-09-10",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 780464,
+      "date": "2025-05-20",
+      "rank_sha256": "136b431dd8d8065970957b2392c6d2eaeb070991668aa7de8c44bc73d8850ceb",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-05-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 781135,
+      "date": "2025-05-20",
+      "rank_sha256": "49cfbba9eecc79a84b22b75d2394ecc0e0b3fdc164dc0fd0f0b8cadf0aa1a865",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-05-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 781117,
+      "date": "2025-07-20",
+      "rank_sha256": "1106969c9e0999ddc972d114a13ddee4933afb1cf8e11a5d4cb0d865154e527e",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 781631,
+      "date": "2025-07-20",
+      "rank_sha256": "12dd46414147c2af1d3b262286bc50755666d61cf173668ee1945b2e4d3339d0",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 781705,
+      "date": "2025-08-20",
+      "rank_sha256": "35f76125815591a5e52d30da5e359231bdb961ed7cc35f17c22ff899ba4a8077",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 780878,
+      "date": "2025-08-20",
+      "rank_sha256": "481e764932271b9d7e1e178f65128d53edf9ef01b4e2e714e394c809d07201b9",
+      "sport_id": 11,
+      "league_id": 117,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-il-2025-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 779937,
+      "date": "2025-05-20",
+      "rank_sha256": "37193bf65adf00f3d24f74f35bdd9eb7c6d2054779a8cc2680955b283fcb022a",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-05-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 780010,
+      "date": "2025-05-20",
+      "rank_sha256": "430801db3b56fa319bd666e0822d5884bf8aa14b978653f39c93807d95e74b8a",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-05-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 779615,
+      "date": "2025-07-20",
+      "rank_sha256": "190473d8ceee814ddd09592b4e469652068d2a860798a2916713fd232102fe24",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 780056,
+      "date": "2025-07-20",
+      "rank_sha256": "9e2f9f9da75bf316354b7471665469b0364427e7d26e8957c6e1ee58a4d03a25",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-07-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 780205,
+      "date": "2025-08-20",
+      "rank_sha256": "96cad5a0a404557954e03a603a5ec299db82da29acba0606b96cf58b41e3a4f0",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 779754,
+      "date": "2025-08-20",
+      "rank_sha256": "acc0ebe7a9c62c4475b0640eca43b544f0ee2a819d610f52f511dada4291b343",
+      "sport_id": 11,
+      "league_id": 112,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "aaa-2025-pcl-2025-08-20",
+      "level": "aaa",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 824273,
+      "date": "2026-05-20",
+      "rank_sha256": "1c1208e86ce72e400041b6bdb70087b2455bae148e0e5537bc515214f951545a",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-05-20",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 823134,
+      "date": "2026-05-20",
+      "rank_sha256": "22f07b6ca40427d75a8b3fac388984156e318d7bc7dc3729a44c3faa39abc296",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-05-20",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 824087,
+      "date": "2026-07-20",
+      "rank_sha256": "0e71682ff65d9ec6dd1119e4b34d0882dc79d56ae75e51990c8892bbae7f35f5",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-07-20",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 824167,
+      "date": "2026-07-20",
+      "rank_sha256": "1560bf692b5890e7fa13bd2e2b9af7e3a804fe52973c4258c09e3c8ee3b94a68",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-07-20",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 824872,
+      "date": "2026-09-10",
+      "rank_sha256": "36ce7d1dc40efad893c88552c5b037313ef2329cedc0d927b21da78c13000e03",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-09-10",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    },
+    {
+      "game_pk": 823088,
+      "date": "2026-09-10",
+      "rank_sha256": "9855c00e4669a456515a8e431ed192279402aa02b4c1523ba2a2bfc92878a4ca",
+      "sport_id": 1,
+      "league_id": null,
+      "feed_rule_confirmation_required": true,
+      "stratum_id": "mlb-2026-2026-09-10",
+      "level": "mlb",
+      "acquisition_status": "not_started"
+    }
+  ]
+}

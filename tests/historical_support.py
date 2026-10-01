@@ -44,7 +44,10 @@ def game_fixture(season=2019, game_pk=501, away_runs=1, *, extra=False, walkoff=
                         "on_1b": "", "on_2b": "", "on_3b": "", "home_score": str(scores["home"]),
                         "away_score": str(scores["away"]), "description": "ball" if pitch == 1 else "hit_into_play"}
                     rows.append(row)
-                    events.append({"isPitch": True, "pitchNumber": pitch, "index": pitch - 1})
+                    events.append({"isPitch": True, "type": "pitch", "pitchNumber": pitch,
+                        "index": pitch - 1, "count": {"balls": 1, "strikes": 0, "outs": outs},
+                        "details": {"call": {"code": "B" if pitch == 1 else "X"},
+                                    "isBall": pitch == 1, "isStrike": False, "isInPlay": pitch == 2}})
                 if homer:
                     scores[batting] += 1
                     line[batting]["runs"] += 1
@@ -53,7 +56,10 @@ def game_fixture(season=2019, game_pk=501, away_runs=1, *, extra=False, walkoff=
                 plays.append({"about": {"atBatIndex": index, "inning": inning, "halfInning": half,
                     "isComplete": True}, "count": {"outs": outs},
                     "result": {"homeScore": scores["home"], "awayScore": scores["away"]},
-                    "playEvents": events})
+                    "playEvents": events, "matchup": {"batter": {"id": index + 1000}},
+                    "runners": [{"movement": {"start": None, "end": "score" if homer else None,
+                        "isOut": not homer, "outNumber": None if homer else outs},
+                        "details": {"runner": {"id": index + 1000}, "playIndex": 1}}]})
         innings.append(line)
     feed = {"gamePk": game_pk, "gameData": {"status": {"abstractGameState": "Final"},
         "game": {"type": "R", "season": str(season)}, "datetime": {"officialDate": game_date},

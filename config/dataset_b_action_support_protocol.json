@@ -1,0 +1,21 @@
+{
+  "schema_version": "dataset-b-action-support-protocol-v1",
+  "scope": "固定 Dataset B 候選中，歷史挑戰／保留行動的重疊支持與額度耗盡設限稽核；非反事實效果估計",
+  "risk_set_population": "provisional_opportunity",
+  "training_split": "train",
+  "evaluation_splits": ["validation", "test", "external"],
+  "game_phase_innings": {"early": [1, 3], "middle": [4, 6], "late": [7, 9]},
+  "support_strata": ["game_phase", "decision_side", "challenges_remaining"],
+  "minimum_train_challenges_per_stratum": 20,
+  "minimum_train_saves_per_stratum": 20,
+  "minimum_train_challenge_games_per_stratum": 5,
+  "minimum_train_save_games_per_stratum": 5,
+  "minimum_train_action_fraction": 0.01,
+  "maximum_train_action_fraction": 0.99,
+  "limitations": [
+    "這是觀察性行動分布；球員對好球帶誤判的感知與其他決策因素未被觀察，不能把行動組差異解讀為因果效果。",
+    "零額度候選只提供額度耗盡證據，不是可合法挑戰的風險集。",
+    "若最後一次挑戰後沒有同隊後續候選，現有候選檔無法單憑此資料判定額度是否耗盡。",
+    "ABS 技術故障、replay 後資格及完整開發清冊未驗收；正式策略與 RRA 閘門維持關閉。"
+  ]
+}

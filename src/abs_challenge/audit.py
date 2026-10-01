@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .domain import GameRules
+from .domain import ChallengeEvent, GameRules
 from .extract import extract_challenge_events
 from .ledger import reconstruct_ledger
 from .savant import (
@@ -17,7 +17,7 @@ from .savant import (
 
 def _official_abs_totals(game_data: dict[str, Any]) -> tuple[int, int] | None:
     counters = game_data.get("absChallenges") or {}
-    if not counters.get("hasChallenges"):
+    if type(counters.get("hasChallenges")) is not bool:
         return None
     attempts = 0
     overturned = 0
@@ -32,6 +32,8 @@ def _official_abs_totals(game_data: dict[str, Any]) -> tuple[int, int] | None:
             return None
         overturned += successful
         attempts += successful + failed
+    if counters["hasChallenges"] is False and attempts != 0:
+        return None
     return attempts, overturned
 
 
@@ -39,6 +41,8 @@ def audit_feed(
     feed: dict[str, Any],
     rules: GameRules,
     statcast_rows: list[dict[str, str]] | None = None,
+    *,
+    challenge_events: list[ChallengeEvent] | None = None,
 ) -> dict[str, Any]:
     game_data = feed["gameData"]
     teams = game_data["teams"]
@@ -63,7 +67,7 @@ def audit_feed(
         (int((play.get("about") or {}).get("inning") or 0) for play in all_plays),
         default=0,
     )
-    events = extract_challenge_events(feed)
+    events = extract_challenge_events(feed) if challenge_events is None else challenge_events
     ledger, ending_budgets = reconstruct_ledger(events, (away_id, home_id), rules)
     official_totals = _official_abs_totals(game_data)
     observed_overturned = sum(row.event.overturned for row in ledger)

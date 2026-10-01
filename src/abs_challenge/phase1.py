@@ -25,12 +25,28 @@ def call_only_limitation(feed: dict[str, Any], row: dict[str, Any], state: GameS
         return "不是純 called ball／strike（可能有 blocked ball 或額外動作）"
     actual = apply_call(state, row["abs_call"])
     expected_outs = 3 if actual.half_ended else actual.re_outs
-    if pitch.get("count", {}).get("outs") != expected_outs:
-        return "官方球後出局數與純判決不符"
     is_walk = row["abs_call"] == "ball" and state.balls == 3
     is_strikeout = row["abs_call"] == "strike" and state.strikes == 2
     later_pitches = [e["index"] for e in events if e.get("isPitch") and e["index"] > pitch["index"]]
     next_pitch_index = min(later_pitches, default=float("inf"))
+    if pitch.get("count", {}).get("outs") != expected_outs:
+        # 終局三振的逐球 count 可仍存投球前出局數。只有打席總數與
+        # 同事件打者出局序號皆一致時才接受；不一律加一或放寬複合事件。
+        batter_outs = [runner for runner in play.get("runners", [])
+                      if runner.get("details", {}).get("playIndex") == pitch["index"]
+                      and runner.get("details", {}).get("runner", {}).get("id") == row["batter_id"]
+                      and runner.get("details", {}).get("eventType") == "strikeout"
+                      and runner.get("movement", {}).get("isOut") is True
+                      and runner.get("movement", {}).get("outNumber") == expected_outs]
+        verified_stale_count = (
+            is_strikeout and next_pitch_index == float("inf")
+            and pitch.get("count", {}).get("outs") == state.outs
+            and pitch.get("details", {}).get("isOut") is True
+            and play.get("result", {}).get("eventType") == "strikeout"
+            and play.get("count", {}).get("outs") == expected_outs
+            and len(batter_outs) == 1)
+        if not verified_stale_count:
+            return "官方球後出局數與純判決不符"
     # 打席終局若不是單純 BB／K，不推定不死三振或複合出局的另一條路徑。
     if next_pitch_index == float("inf") and (is_walk or is_strikeout):
         expected_type = "walk" if is_walk else "strikeout"

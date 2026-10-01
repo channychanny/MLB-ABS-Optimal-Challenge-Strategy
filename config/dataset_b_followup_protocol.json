@@ -1,0 +1,29 @@
+{
+  "schema_version": "dataset-b-observational-followup-protocol-v1",
+  "scope": "固定 Dataset B 91 場暫定風險集的歷史路徑敏感度與下一機會分布",
+  "risk_set_population": "provisional_opportunity",
+  "excluded_unlocalized_game_pks": [752127, 753397, 753580, 780468, 780929],
+  "training_split": "train",
+  "selection_split": "validation",
+  "held_out_splits": ["test", "external"],
+  "current_predictors": ["decision_side", "challenges_remaining"],
+  "next_side_classes": ["batting", "fielding"],
+  "next_wp_value_classes": ["unsupported", "nonpositive", "up_to_0_5_pp", "over_0_5_to_2_pp", "over_2_pp"],
+  "wp_value_breaks": [0.0, 0.005, 0.02],
+  "multinomial_smoothing_event_counts": [10, 50, 200],
+  "global_dirichlet_per_class": 0.5,
+  "game_phase_innings": {"early": [1, 6], "late": [7, 8], "ninth": [9, 9]},
+  "censoring_horizon_pitches": 20,
+  "missing_game_scenario_hazard_quantiles": [0.1, 0.5, 0.9],
+  "missing_game_scenario_exposure": "median_of_included_train_games",
+  "bootstrap_unit": "game_pk",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260929,
+  "selection_metric": "categorical_negative_log_likelihood_per_observed_next_event",
+  "limitations": [
+    "五場缺漏情境以已納入訓練場次的每場曝光中位數與 hazard 分位數假設填入，僅是敏感度情境，不是識別界限或真實復原",
+    "下一機會的狀態與 WP 價值只在已觀察到達的歷史路徑上估計；右設限時沒有下一狀態可驗證",
+    "WP 價值以固定官方表格雙側可查的下一機會差值分類，unsupported 獨立保留，不補零",
+    "ABS 技術停用與 replay 後資格未知，正式 Legal Opportunity 和行動依賴反事實模型仍未完成"
+  ]
+}

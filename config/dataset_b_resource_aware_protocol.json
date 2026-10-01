@@ -1,0 +1,23 @@
+{
+  "schema_version": "dataset-b-resource-aware-arrival-protocol-v1",
+  "estimand": "在歷史已執行行動與翻判結果之後，額度仍大於零時，同隊下一個有額度暫定候選的條件到達間隔",
+  "risk_set_population": "provisional_opportunity",
+  "training_split": "train",
+  "selection_split": "validation",
+  "held_out_splits": ["test", "external"],
+  "conditioning_fields": ["pre_pitch_state.balls", "pre_pitch_state.strikes", "post_action_budget"],
+  "smoothing_prior_pitch_exposures": [25, 100, 400],
+  "selection_metric": "negative_log_likelihood_per_pitch_exposure",
+  "primary_metric": "negative_log_likelihood_per_pitch_exposure",
+  "secondary_metric": "negative_log_likelihood_per_episode",
+  "forecast_horizons_pitches": [5, 10, 20],
+  "bootstrap_unit": "game_pk",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260929,
+  "limitations": [
+    "post_action_budget 需知道已發生的挑戰及翻判結果，不是挑戰前可直接使用的決策特徵。",
+    "這是以實際歷史行動和結果為條件的觀察性存活者到達模型，不能直接推論改選另一行動後的球序或收益。",
+    "額度耗盡是即時資源終止，另列而不當作九局右設限或幾何 hazard 的等待曝光。",
+    "ABS 故障與 replay 資格、五場 Train 來源缺漏、完整開發清冊及官方 WP 表外 continuation 仍未完成。"
+  ]
+}

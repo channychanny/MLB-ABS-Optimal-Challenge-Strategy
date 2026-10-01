@@ -1,0 +1,16 @@
+{
+  "schema_version": "policy-scenario-state-input-v1",
+  "pre_pitch_state": {
+    "inning": 5,
+    "half": "bottom",
+    "outs": 1,
+    "bases": 1,
+    "balls": 2,
+    "strikes": 1,
+    "home_score": 0,
+    "away_score": 0
+  },
+  "original_call": "strike",
+  "challenges_remaining": 1,
+  "assume_pure_called_pitch": true
+}

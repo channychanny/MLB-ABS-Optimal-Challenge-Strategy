@@ -11,13 +11,15 @@ from unittest.mock import Mock, patch
 from urllib.error import URLError
 
 from abs_challenge.historical_batch import normalize_schedule, run_historical_batch, schedule_url, validate_plan
+from abs_challenge.historical import content_hash
 from abs_challenge.source_cache import SourceCache
 from abs_challenge.cli import main
 from historical_support import bundle_fixture, contract, game_fixture
+from test_historical_alignment import starting_automatic_strike
 
 
-def batch_sources(season=2019):
-    games = [game_fixture(season=season, game_pk=501), game_fixture(season=season, game_pk=502)]
+def batch_sources(season=2019, first_game=None):
+    games = [first_game or game_fixture(season=season, game_pk=501), game_fixture(season=season, game_pk=502)]
     entries, sources = [], {}
     all_rows = [row for feed, rows in games for row in rows]
     for feed, rows in games:
@@ -53,6 +55,30 @@ class HistoricalBatchTests(unittest.TestCase):
     def run_batch(self, plan=None, code_signature="code-v1"):
         return run_historical_batch(sample_plan() if plan is None else plan, contract(), self.cache,
                                     self.root / "artifacts", code_signature=code_signature)
+
+    def test_alignment_summary_and_offline_replay_with_automatic_event(self):
+        self.sources = batch_sources(first_game=starting_automatic_strike())
+        before = self.run_batch()
+        self.assertEqual(before["summary"]["alignment"], {"non_pitch_rows": 1,
+            "renumbered_pitch_rows": 2, "state_verified_pitch_rows": 220,
+            "no_pitch_plate_appearances": 0})
+        self.cache = SourceCache(self.root / "cache", offline=True, fetch=Mock(side_effect=AssertionError()))
+        after = self.run_batch()
+        self.assertEqual(before["dataset_lock_sha256"], after["dataset_lock_sha256"])
+        self.assertEqual(after["execution"]["reused_shards"], 2)
+        self.assertEqual(after["execution"]["downloads"], 0)
+
+    def test_inconsistent_alignment_evidence_in_cached_shard_is_rejected(self):
+        report = self.run_batch()
+        path = self.root / "artifacts" / report["dataset_lock"]["games"][0]["relative_path"]
+        shard = json.loads(path.read_text(encoding="utf-8"))
+        dataset = shard["dataset"]
+        dataset["rows"][0]["alignment"]["balls_before"] = 3
+        dataset["dataset_content_sha256"] = content_hash({k: v for k, v in dataset.items() if k != "dataset_content_sha256"})
+        path.write_text(json.dumps(shard), encoding="utf-8")
+        result = self.run_batch()
+        self.assertEqual(result["summary"]["accepted_games"], 1)
+        self.assertIn("對齊證據", result["dataset_lock"]["games"][0]["reason"])
 
     def test_shared_csv_and_complete_coverage(self):
         report = self.run_batch()

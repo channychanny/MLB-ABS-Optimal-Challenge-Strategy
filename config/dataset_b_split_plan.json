@@ -1,0 +1,29 @@
+{
+  "schema_version": "dataset-b-split-plan-v1",
+  "purpose": "future_opportunity_temporal_rules_not_final_holdout",
+  "status": "rules_predeclared_game_lists_pending",
+  "population": "confirmed_two_challenge_regulation_games_with_provisional_source_eligibility",
+  "development_registry_completeness": "known_project_samples_only",
+  "development_sources": [
+    "reports/phase0_feasibility.md",
+    "config/official_wp_coverage.json",
+    "config/official_wp_expansion_games.json"
+  ],
+  "known_development_game_pks": [
+    721393, 723507, 723845, 751852, 752594, 752664, 752811, 753200, 753323,
+    753349, 753402, 753574, 779615, 779754, 779936, 779937, 780009, 780010,
+    780056, 780205, 780464, 780878, 780910, 781117, 781135, 781631, 781705,
+    823088, 823134, 823244, 823488, 823569, 824087, 824134, 824167, 824273,
+    824378, 824872, 825027
+  ],
+  "windows": [
+    {"name": "train_2024_il", "split": "train", "start": "2024-06-25", "end": "2024-09-30", "sport_id": 11, "league_id": 117, "regime": "aaa-2024-il-after-2024-06-25"},
+    {"name": "train_2025_il_early", "split": "train", "start": "2025-03-01", "end": "2025-06-30", "sport_id": 11, "league_id": 117, "regime": "aaa-2025-il"},
+    {"name": "validation_2025_il", "split": "validation", "start": "2025-07-01", "end": "2025-08-31", "sport_id": 11, "league_id": 117, "regime": "aaa-2025-il"},
+    {"name": "test_2025_il", "split": "test", "start": "2025-09-01", "end": "2025-09-30", "sport_id": 11, "league_id": 117, "regime": "aaa-2025-il"},
+    {"name": "external_2026_mlb", "split": "external", "start": "2026-04-01", "end": "2026-09-30", "sport_id": 1, "league_id": null, "regime": "mlb-2026"}
+  ],
+  "selection_policy": "在取得候選場清冊前先固定時間窗與排除規則；新場次抽樣方法、game_pk 清冊、樣本量與來源 manifest 尚待預先鎖定，不得依結果補選。",
+  "official_wp_overlap_note": "2025 可測 Future Opportunity 的時間泛化，但不能稱官方 WP 快照的完全獨立測試。",
+  "formal_model_evaluation_ready": false
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "dataset-b-limited-model-input-policy-v1",
+  "selection_sha256": "c8ac1bd600d216be617e54a86e539efe3091d14dea46ad6c58390c6b8104c20f",
+  "estimand": "公開來源可觀測的暫定不利好壞球候選，在實際歷史路徑中的下一次同隊候選到達間隔",
+  "inclusion_rule": "兩次制已確認、完整逐球嚴格對齊、官方分隊成功與失敗計數完全核對，且候選檔可重播",
+  "unlocalized_game_pks": [752127, 753397, 753580, 780468, 780929],
+  "replacement": false,
+  "expected_selected_games": 96,
+  "expected_included_games": 91,
+  "expected_split_games": {"train": 43, "validation": 12, "test": 12, "external": 24},
+  "expected_recovered_games": 6,
+  "feature_fields": ["pre_pitch_state", "challenges_remaining", "original_call", "decision_team_id", "decision_side"],
+  "risk_set_population": "provisional_opportunity",
+  "arrival_event": "同隊下一個仍有額度且非明確位置球員投手的暫定候選；零額度與位置球員投手候選不算到達事件",
+  "target_fields": ["pitch_gap", "next_opportunity_observed", "censoring_boundary"],
+  "source_eligibility_scope": "ABS 停用與 replay 資格未有逐球完整來源；本基線只稱暫定候選，並於敏感度分析揭露限制",
+  "known_limitations": [
+    "五場無法定位官方計數中的全部挑戰，整場排除且不補樣；流失可能造成選樣偏差",
+    "觀察到的後續到達間隔不是挑戰翻判後的反事實路徑",
+    "2025 Test 不能視為固定官方 WP 快照的完全獨立測試"
+  ],
+  "formal_legal_opportunity_ready": false,
+  "formal_dynamic_policy_ready": false
+}

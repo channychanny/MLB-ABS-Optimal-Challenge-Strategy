@@ -1,0 +1,13 @@
+{
+  "schema_version": "official-wp-phase2-closeout-v1",
+  "scope": "第 1–9 局、兩次挑戰制；延長賽只作完整比賽來源稽核",
+  "boundary_home_wp_sensitivity": [0.25, 0.4, 0.5, 0.6, 0.75],
+  "boundary_reference_home_wp": 0.5,
+  "decision_scenario_id": "large_resource_cost",
+  "decision_overturn_probability_assumption": 0.5,
+  "synthetic_boundary_values_not_empirical_interval": true,
+  "source_unknown_not_legal": true,
+  "formal_legal_opportunity_ready": false,
+  "counterfactual_transition_ready": false,
+  "formal_policy_evaluation_ready": false
+}

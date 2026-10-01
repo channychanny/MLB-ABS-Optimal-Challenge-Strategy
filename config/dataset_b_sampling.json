@@ -1,0 +1,15 @@
+{
+  "schema_version": "dataset-b-schedule-sampling-v1",
+  "seed": "dataset-b-2026-09-24-predeclared-v1",
+  "selection": "sha256_seed_window_game_pk",
+  "replacement": false,
+  "purpose": "僅鎖定各時間窗賽程候選，不代表 ABS 規則或逐球來源資格已確認",
+  "quotas": {
+    "train_2024_il": 24,
+    "train_2025_il_early": 24,
+    "validation_2025_il": 12,
+    "test_2025_il": 12,
+    "external_2026_mlb": 24
+  },
+  "quota_note": "96 場是有界的工程預備樣本，不是正式模型樣本量或統計效力承諾；不足不依結果遞補。"
+}

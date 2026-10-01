@@ -1,0 +1,38 @@
+{
+  "schema_version": "official-wp-coverage-plan-v1",
+  "cohort_id": "local-mlb-development-2026-v1",
+  "selection_reason": "2026-09-21 本機既存的全部六場 2026 MLB feed；便利開發樣本，不依本輪覆蓋結果篩選，不代表整季。既有三場結果已知，非前瞻獨立驗證。",
+  "population": "actual_attempts_development_only",
+  "opportunity_population_status": "provisional_source_limitations",
+  "coverage_required_fraction": 1,
+  "threshold_reason": "只檢查本固定樣本能否全部估值，任何缺值都不能稱全覆蓋；不是全季統計門檻。",
+  "baseline": "data/processed/savant_baseline_v2_2026-09-15.json",
+  "games": [
+    {
+      "game_pk": 823244,
+      "date": "2026-03-25"
+    },
+    {
+      "game_pk": 823488,
+      "date": "2026-03-28"
+    },
+    {
+      "game_pk": 823569,
+      "date": "2026-04-04"
+    },
+    {
+      "game_pk": 824134,
+      "date": "2026-04-04"
+    },
+    {
+      "game_pk": 824378,
+      "date": "2026-04-04"
+    },
+    {
+      "game_pk": 825027,
+      "date": "2026-04-04"
+    }
+  ],
+  "evaluate_opportunities": true,
+  "opportunity_selection_note": "沿用全部六場開發 cohort；先核對完整事件、狀態及比分，保留所有不利判決並分開零額度、投手資格未知及暫定機會。完整母體不自動宣稱合法性已確認。"
+}

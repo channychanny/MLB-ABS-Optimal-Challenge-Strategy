@@ -1,0 +1,48 @@
+{
+  "schema_version": "decision-time-policy-scenarios-v1",
+  "scope": "第 1–9 局兩次制的決策時有限情境原型；不估計正式 Dynamic Policy 或 RRA",
+  "probability_source": "synthetic_sensitivity_not_player_confidence",
+  "future_value_source": "synthetic_increment_not_empirical_transition",
+  "historical_post_action_model_as_decision_feature": false,
+  "overturn_probability_grid": [0.25, 0.5, 0.75, 0.9],
+  "game_phase_innings": {"early": [1, 3], "middle": [4, 6], "late": [7, 9]},
+  "scenarios": [
+    {
+      "id": "immediate_only",
+      "failed_challenge_option_cost_by_budget": {"1": 0.0, "2": 0.0},
+      "successful_branch_future_shift": 0.0
+    },
+    {
+      "id": "small_resource_cost",
+      "failed_challenge_option_cost_by_budget": {"1": 0.005, "2": 0.0025},
+      "successful_branch_future_shift": 0.0
+    },
+    {
+      "id": "large_resource_cost",
+      "failed_challenge_option_cost_by_budget": {"1": 0.02, "2": 0.01},
+      "successful_branch_future_shift": 0.0
+    },
+    {
+      "id": "adverse_success_continuation",
+      "failed_challenge_option_cost_by_budget": {"1": 0.01, "2": 0.005},
+      "successful_branch_future_shift": -0.005
+    },
+    {
+      "id": "favorable_success_continuation",
+      "failed_challenge_option_cost_by_budget": {"1": 0.01, "2": 0.005},
+      "successful_branch_future_shift": 0.005
+    }
+  ],
+  "action_tie_tolerance": 1e-12,
+  "risk_set_population": "provisional_opportunity",
+  "supported_valuation_status": "both_supported",
+  "formal_legal_opportunity_ready": false,
+  "formal_policy_evaluation_ready": false,
+  "limitations": [
+    "情境成本與成功分支位移是人工假設，不是從 Dataset B 識別出的未來 Challenge Option Value。",
+    "成功率格點不代表球員當下的真實主觀信心或已校準翻判機率。",
+    "兩側官方 WP 支援不足時保留 unsupported，不補零、不截尾 ±5 分。",
+    "挑戰前不得使用 actual_challenge、overturned、post_action_budget、到達標籤或事後投球路徑。",
+    "ABS 技術故障與 replay 後資格、正式反事實轉移、對手策略及表外 continuation 未完成。"
+  ]
+}

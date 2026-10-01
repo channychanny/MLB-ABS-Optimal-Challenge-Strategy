@@ -1,0 +1,37 @@
+{
+  "schema_version": "phase3-synthetic-regulation-policy-v1",
+  "scope": "第 1–9 局兩次挑戰制；每個剩餘局數至多一個人工未來機會槽",
+  "model_type": "synthetic_wp_fractional_loss_not_empirical_transition",
+  "future_opportunity_source": "declared_sensitivity_not_dataset_b_arrival_hazard",
+  "future_overturn_source": "declared_sensitivity_not_player_confidence",
+  "future_state_representation": "decision_team_wp_only_no_base_out_or_score_transition",
+  "opponent_policy": "no_explicit_opponent_challenge_model",
+  "current_overturn_probability_grid": [0.25, 0.5, 0.75, 0.9],
+  "cohort_detail_probability": 0.5,
+  "fixed_confidence_threshold": 0.5,
+  "scenarios": [
+    {
+      "id": "sparse_small_loss",
+      "opportunity_probability_by_phase": {"early": 0.1, "middle": 0.15, "late": 0.2},
+      "adverse_wp_loss_fraction": 0.02,
+      "future_overturn_probability": 0.5
+    },
+    {
+      "id": "moderate",
+      "opportunity_probability_by_phase": {"early": 0.25, "middle": 0.35, "late": 0.45},
+      "adverse_wp_loss_fraction": 0.04,
+      "future_overturn_probability": 0.5
+    },
+    {
+      "id": "late_heavy",
+      "opportunity_probability_by_phase": {"early": 0.1, "middle": 0.25, "late": 0.65},
+      "adverse_wp_loss_fraction": 0.06,
+      "future_overturn_probability": 0.5
+    }
+  ],
+  "unsupported_branch_handling": "abstain_no_clipping_no_zero_fill",
+  "formal_legal_opportunity_ready": false,
+  "counterfactual_transition_ready": false,
+  "empirical_outside_continuation_ready": false,
+  "formal_policy_evaluation_ready": false
+}
