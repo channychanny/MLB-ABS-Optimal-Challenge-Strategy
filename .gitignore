@@ -109,3 +109,7 @@ __marimo__/
 # 僅保留資料目錄結構
 !/data/raw/.gitkeep
 !/data/processed/.gitkeep
+
+# 本機 Codex 技能安裝產物，不屬於 ABS 研究專案
+/.agents/
+/skills-lock.json
